@@ -17,8 +17,9 @@ const UserSchema = new Schema({
     role:{
         type:String,
         enum:['student','teacher','admin'],
-        required:true,
-    },
-});
+        default:'student',
+        
+    }
+},{timestamps:true});
 
 module.exports = mongoose.model("UserModel", UserSchema);
