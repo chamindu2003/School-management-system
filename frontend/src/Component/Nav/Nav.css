@@ -1,15 +1,18 @@
 /* Guest Navigation (when not logged in) */
 .top-nav-guest {
-  /* emerald / teal header for better contrast */
-  background: linear-gradient(135deg, #059669 0%, #10b981 55%);
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.9) 0%, rgba(99, 102, 241, 0.9) 50%, rgba(139, 92, 246, 0.9) 100%);
   padding: 0.6rem 0;
-  box-shadow: 0 6px 20px rgba(5,150,105,0.08);
+  box-shadow: 0 8px 32px rgba(79, 70, 229, 0.2);
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 999;
-  backdrop-filter: blur(6px);
+/* Expand tables left to fill the gap caused by the fixed sidebar when
+   `body.sidebar-open` padding is present. This targets the common table
+   classes used on admin pages so tables visually reach closer to the
+   sidebar without changing container centering. */
+  backdrop-filter: blur(10px);
 }
 
 .guest-nav-container {
@@ -22,19 +25,12 @@
 }
 
 .guest-logo {
-  display: inline-flex;
-  align-items: center;
+  color: white;
   text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: 700;
   margin: 0;
-}
-
-.guest-header-logo {
-  width: 46px;
-  height: 46px;
-  object-fit: contain;
-  border-radius: 8px;
-  background: rgba(255,255,255,0.9);
-  padding: 6px;
+  letter-spacing: -0.5px;
 }
 
 .guest-nav-links {
@@ -55,13 +51,13 @@
 
 .guest-btn.login-btn {
   background: white;
-  color: #059669; /* emerald accent */
+  color: #4F46E5;
 }
 
 .guest-btn.login-btn:hover {
-  background: #ecfdf5;
+  background: #F3F4F6;
   transform: translateY(-3px);
-  box-shadow: 0 12px 24px rgba(5,150,105,0.08);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
 }
 
 .guest-btn.signup-btn {
@@ -113,7 +109,8 @@
   top: 0;
   height: 100vh;
   width: 260px;
-  background: linear-gradient(180deg, var(--sidebar-start) 0%, var(--sidebar-mid) 45%, var(--sidebar-end) 100%);
+  /* Match the guest header indigo/violet gradient for visual unity */
+  background: linear-gradient(180deg, rgba(79,70,229,0.95) 0%, rgba(99,102,241,0.95) 50%, rgba(139,92,246,0.95) 100%);
   color: white;
   display: flex;
   flex-direction: column;
@@ -249,14 +246,13 @@
 }
 
 .sidebar-link:hover {
-  background: rgba(252, 210, 77, 0.06); /* subtle gold highlight */
+  background: rgba(240,195,74,0.06); /* subtle gold highlight using var */
   color: white;
-  border-left-color: #FCD34D;
+  border-left-color: var(--accent);
   padding-left: 26px;
 }
-
 .sidebar-link.active {
-  background: rgba(252, 210, 77, 0.08);
+  background: rgba(240,195,74,0.08);
   color: white;
   border-left-color: #FCD34D;
   font-weight: 700;
