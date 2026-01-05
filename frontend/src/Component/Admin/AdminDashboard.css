@@ -1,0 +1,177 @@
+.admin-dashboard-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  margin-left: 0;
+  min-height: calc(100vh - 60px);
+}
+
+.admin-dashboard-container h1 {
+  font-size: 3rem;
+  color: #1F2937;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+/* common admin-page wrapper spacing for other admin pages */
+.admin-page { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; }
+
+.admin-dashboard-container > p {
+  color: #6B7280;
+  font-size: 1.1rem;
+  margin-bottom: 3rem;
+}
+
+.admin-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.admin-card {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, #4F46E5 0%, #8B5CF6 100%);
+  transition: left 0.3s ease;
+}
+
+.admin-card:hover::before {
+  left: 0;
+}
+
+.admin-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 40px rgba(79, 70, 229, 0.15);
+  border-color: #E0E7FF;
+}
+
+.admin-card h2 {
+  margin: 0 0 12px 0;
+  font-size: 1.6rem;
+  color: #4F46E5;
+  font-weight: 700;
+}
+
+.admin-card p {
+  margin: 0;
+  color: #6B7280;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.teacher-card {
+  background: linear-gradient(135deg, #4F46E5 0%, #8B5CF6 100%);
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.teacher-card::before {
+  display: none;
+}
+
+.teacher-card h2 {
+  color: white;
+}
+
+.teacher-card p {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.teacher-card:hover {
+  border-color: transparent;
+  box-shadow: 0 16px 40px rgba(79, 70, 229, 0.3);
+}
+
+.admin-section {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  margin-top: 2rem;
+}
+
+.btn-back {
+  display: inline-block;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%);
+  color: #4F46E5;
+  border: 1.5px solid #E5E7EB;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  margin: 24px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-back:hover {
+  background: linear-gradient(135deg, #E5E7EB 0%, #D1D5DB 100%);
+  border-color: #4F46E5;
+  transform: translateX(-3px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+}
+
+@media (max-width: 1024px) {
+  .admin-dashboard-container {
+    margin-left: 0;
+    padding: 2rem 1.5rem;
+  }
+
+  .admin-dashboard-container h1 {
+    font-size: 2.5rem;
+  }
+
+  .admin-cards {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+/* Shift admin pages when sidebar is open (desktop only) */
+@media (min-width: 769px) {
+  .sidebar-open .admin-dashboard-container,
+  .sidebar-open .admin-page {
+    margin-left: 280px;
+    transition: margin-left 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-dashboard-container {
+    padding: 1.5rem 1rem;
+  }
+
+  .admin-dashboard-container h1 {
+    font-size: 2rem;
+  }
+
+  .admin-cards {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .btn-back {
+    margin: 16px;
+    padding: 10px 20px;
+  }
+}
