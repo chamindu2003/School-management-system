@@ -19,7 +19,7 @@
   margin: 0;
 }
 
-.logout-btn {
+.student-header .logout-btn {
   padding: 0.6rem 1.2rem;
   background: #edf2f7;
   color: #4a5568;
@@ -36,7 +36,7 @@
   position: relative;
 }
 
-.logout-btn {
+.student-header .logout-btn {
   position: absolute;
   right: 0.75rem;
   top: 50%;
@@ -56,7 +56,7 @@
   transition: all 0.15s ease;
 }
 
-.logout-btn:hover {
+.student-header .logout-btn:hover {
   background: #f56565;
   border-color: #e53e3e;
   color: #fff;
@@ -65,7 +65,7 @@
 
 .btn-add {
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(90deg, var(--primary-1), var(--primary-2));
   color: white;
   border: none;
   border-radius: 8px;
@@ -77,7 +77,7 @@
 
 .btn-add:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 8px 16px rgba(91, 62, 166, 0.18);
 }
 
 /* Form Container */
@@ -289,7 +289,7 @@
   }
 
   /* On mobile revert logout button to normal flow */
-  .logout-btn {
+  .student-header .logout-btn {
     position: static;
     transform: none;
     align-self: flex-end;

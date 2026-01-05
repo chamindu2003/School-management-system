@@ -4,6 +4,18 @@
   box-sizing: border-box;
 }
 
+:root{
+  --primary-1: #30406a; /* navy */
+  --primary-2: #5b3ea6; /* purple */
+  --accent: #f0c34a; /* gold */
+  --bg: #f7f8fb;
+  --sidebar-start: #071430;
+  --sidebar-mid: #1e2a70;
+  --sidebar-end: #3b2f9b;
+  --text: #1f2937;
+  --muted: #6b7280;
+}
+
 html {
   scroll-behavior: smooth;
 }

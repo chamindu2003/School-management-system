@@ -1,7 +1,7 @@
 /* Teacher Dashboard Main */
 .teacher-dashboard {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary-1) 0%, var(--primary-2) 100%);
   padding: 20px;
 }
 
@@ -86,10 +86,10 @@
 /* Dashboard Content */
 .dashboard-content {
   flex: 1;
-  background: white;
+  background: var(--bg);
   border-radius: 10px;
   padding: 30px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
 .dashboard-overview h2 {
@@ -149,7 +149,7 @@
 
 .action-btn {
   padding: 12px 20px;
-  background: #667eea;
+  background: linear-gradient(90deg, var(--primary-1), var(--primary-2));
   color: white;
   border: none;
   border-radius: 5px;
@@ -159,8 +159,8 @@
 }
 
 .action-btn:hover {
-  background: #764ba2;
   transform: translateY(-2px);
+  filter: brightness(1.03);
 }
 
 /* Teacher Info */
@@ -178,6 +178,38 @@
 .teacher-info p {
   margin: 10px 0;
   color: #666;
+}
+
+/* Header and top-right add button */
+.teacher-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 16px;
+  position: relative;
+  margin-bottom: 1.25rem;
+}
+
+.teacher-header h1 {
+  font-size: 2rem;
+  margin: 0;
+  color: #1f2937;
+}
+
+.btn-add.top-right {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+@media (max-width: 768px) {
+  .btn-add.top-right {
+    position: static;
+    transform: none;
+    margin-top: 0.75rem;
+    align-self: flex-start;
+  }
 }
 
 /* View Toggle */
