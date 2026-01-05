@@ -1,20 +1,24 @@
 /* Guest Navigation (when not logged in) */
 .top-nav-guest {
   background: linear-gradient(135deg, rgba(79, 70, 229, 0.9) 0%, rgba(99, 102, 241, 0.9) 50%, rgba(139, 92, 246, 0.9) 100%);
-  padding: 1rem 0;
+  padding: 0.6rem 0;
   box-shadow: 0 8px 32px rgba(79, 70, 229, 0.2);
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 999;
+/* Expand tables left to fill the gap caused by the fixed sidebar when
+   `body.sidebar-open` padding is present. This targets the common table
+   classes used on admin pages so tables visually reach closer to the
+   sidebar without changing container centering. */
   backdrop-filter: blur(10px);
 }
 
 .guest-nav-container {
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -23,7 +27,7 @@
 .guest-logo {
   color: white;
   text-decoration: none;
-  font-size: 1.8rem;
+  font-size: 1.2rem;
   font-weight: 700;
   margin: 0;
   letter-spacing: -0.5px;
@@ -31,17 +35,17 @@
 
 .guest-nav-links {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
   align-items: center;
 }
 
 .guest-btn {
   text-decoration: none;
-  padding: 0.75rem 1.75rem;
+  padding: 0.6rem 1.25rem;
   border-radius: 8px;
   font-weight: 600;
   font-size: 0.95rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s ease;
   display: inline-block;
 }
 
@@ -98,13 +102,13 @@
   left: 0;
   top: 0;
   height: 100vh;
-  width: 280px;
-  background: linear-gradient(135deg, #4F46E5 0%, #6366F1 50%, #8B5CF6 100%);
+  width: 260px;
+  background: linear-gradient(180deg, #071430 0%, #1e2a70 45%, #3b2f9b 100%);
   color: white;
   display: flex;
   flex-direction: column;
-  box-shadow: 8px 0 32px rgba(79, 70, 229, 0.2);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 8px 0 32px rgba(2, 8, 35, 0.45);
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1000;
 }
 
@@ -113,17 +117,56 @@
 }
 
 .sidebar-header {
-  padding: 32px 24px;
+  padding: 18px 12px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
 
 .sidebar-header h3 {
-  margin: 0;
-  font-size: 28px;
+  margin: 0 0 0 12px;
+  font-size: 18px;
   font-weight: 700;
-  letter-spacing: -0.5px;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  letter-spacing: -0.3px;
+  text-shadow: none;
+}
+
+.sidebar-logo-wrap{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+}
+
+.sidebar-logo{
+  width:72px;
+  height:72px;
+  object-fit:contain;
+  border-radius:10px;
+  background: rgba(255,255,255,0.06);
+  padding:8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+.sidebar-title{
+  color: #fff;
+  margin:8px 0 0 0;
+  font-size:14px;
+  font-weight:700;
+  text-align:center;
+}
+
+/* Slightly reduce logo on small screens to keep layout tidy */
+@media (max-width: 480px) {
+  .sidebar-logo{
+    width:56px;
+    height:56px;
+    padding:6px;
+  }
+  .sidebar-header{ padding:14px 12px; }
 }
 
 .sidebar-menu {
@@ -132,7 +175,7 @@
   margin: 0;
   flex: 1;
   overflow-y: auto;
-  padding-top: 16px;
+  padding-top: 12px;
 }
 
 .sidebar-menu::-webkit-scrollbar {
@@ -153,7 +196,7 @@
 }
 
 .sidebar-section {
-  margin: 12px 0;
+  margin: 8px 0;
 }
 
 .sidebar-section-title {
@@ -173,10 +216,10 @@
 
 .sidebar-link {
   display: block;
-  padding: 14px 24px;
+  padding: 12px 20px;
   color: rgba(255, 255, 255, 0.92);
   text-decoration: none;
-  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.18s ease;
   border-left: 4px solid transparent;
   font-size: 15px;
   font-weight: 600;
@@ -196,29 +239,29 @@
 }
 
 .sidebar-link:hover {
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(252, 210, 77, 0.06); /* subtle gold highlight */
   color: white;
-  border-left-color: white;
-  padding-left: 28px;
+  border-left-color: #FCD34D;
+  padding-left: 26px;
 }
 
 .sidebar-link.active {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(252, 210, 77, 0.08);
   color: white;
   border-left-color: #FCD34D;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .sidebar-footer {
-  padding: 20px;
+  padding: 16px;
   border-top: 1px solid rgba(255, 255, 255, 0.15);
   background: rgba(0, 0, 0, 0.1);
   margin-top: auto;
 }
 
 .user-info {
-  margin-bottom: 16px;
-  padding: 12px;
+  margin-bottom: 12px;
+  padding: 10px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 8px;
 }
@@ -240,7 +283,7 @@
 
 .logout-btn {
   width: 100%;
-  padding: 12px;
+  padding: 10px;
   background: rgba(255, 255, 255, 0.15);
   color: white;
   border: 1.5px solid rgba(255, 255, 255, 0.3);
@@ -248,7 +291,7 @@
   cursor: pointer;
   font-size: 13px;
   font-weight: 600;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.22s ease;
 }
 
 .logout-btn:hover {
@@ -297,12 +340,100 @@
 /* When sidebar is open on larger screens, shift main content to avoid overlap */
 @media (min-width: 769px) {
   .sidebar-open .home-container {
-    margin-left: 280px;
+    margin-left: 260px;
     transition: margin-left 0.32s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   /* Ensure top guest nav doesn't get affected */
   .sidebar-open .top-nav-guest {
-    left: 280px;
+    left: 260px;
+  }
+}
+
+/* Ensure large hero/landing sections expand to the left edge when sidebar is open */
+@media (min-width: 769px) {
+  body.sidebar-open .hero-section,
+  body.sidebar-open .modern-hero {
+    margin-left: 260px;
+    width: calc(100% - 260px);
+  }
+
+  body.sidebar-open .hero-inner,
+  body.sidebar-open .modern-inner {
+    max-width: none;
+    width: calc(100% - 260px);
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    box-sizing: border-box;
+  }
+}
+
+/* Strong overrides to remove remaining white gap next to sidebar */
+@media (min-width: 769px) {
+  body.sidebar-open .home-container {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+  }
+
+  body.sidebar-open .hero-section,
+  body.sidebar-open .modern-hero {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+    width: calc(100% - 260px) !important;
+    background-position: left center !important;
+  }
+
+  body.sidebar-open .hero-inner,
+  body.sidebar-open .modern-inner {
+    max-width: none !important;
+    width: calc(100% - 260px) !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  body.sidebar-open .features-section,
+  body.sidebar-open .features-grid,
+  body.sidebar-open .footer-inner {
+    width: calc(100% - 260px) !important;
+    margin-left: 0 !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}
+
+/* Remove centered blank gaps by expanding main containers and panels
+   toward the left when sidebar is open on desktop. This makes table
+   content visually reach the sidebar while keeping containers responsive. */
+@media (min-width: 769px) {
+  body.sidebar-open .admin-dashboard-container,
+  body.sidebar-open .admin-page,
+  body.sidebar-open .student-container,
+  body.sidebar-open .user-container,
+  body.sidebar-open .teacher-management,
+  body.sidebar-open .teachers-dashboard,
+  body.sidebar-open .dashboard-container,
+  body.sidebar-open .dashboard-content,
+  body.sidebar-open .student-table-container,
+  body.sidebar-open .user-table-container,
+  body.sidebar-open .teachers-table-container,
+  body.sidebar-open .classes-table-container,
+  body.sidebar-open .ann-mgmt,
+  body.sidebar-open .reports,
+  body.sidebar-open .role-assign {
+    /* Position content to the right of the sidebar instead of centering */
+    margin-left: 260px !important;
+    width: calc(100% - 260px) !important;
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+    box-sizing: border-box;
+  }
+
+  body.sidebar-open .panel,
+  body.sidebar-open .student-form-container,
+  body.sidebar-open .user-form-container,
+  body.sidebar-open .teachers-table-container,
+  body.sidebar-open .student-table-container,
+  body.sidebar-open .user-table-container {
+    width: 100% !important;
   }
 }
