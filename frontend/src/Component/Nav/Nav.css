@@ -142,13 +142,13 @@
 }
 
 .sidebar-logo{
-  width:72px;
-  height:72px;
+  width:96px;
+  height:96px;
   object-fit:contain;
-  border-radius:10px;
+  border-radius:12px;
   background: rgba(255,255,255,0.06);
-  padding:8px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  padding:10px;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.14);
 }
 
 .sidebar-title{
@@ -162,9 +162,9 @@
 /* Slightly reduce logo on small screens to keep layout tidy */
 @media (max-width: 480px) {
   .sidebar-logo{
-    width:56px;
-    height:56px;
-    padding:6px;
+    width:72px;
+    height:72px;
+    padding:8px;
   }
   .sidebar-header{ padding:14px 12px; }
 }
