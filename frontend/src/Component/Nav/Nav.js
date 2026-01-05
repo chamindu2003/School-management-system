@@ -1,36 +1,163 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import './Nav.css'
 
 function Nav() {
-  return (
-    <nav className="navbar">
-      <div className="nav-container">
-        <div className="nav-logo">
-          <h2>School Management System</h2>
+  const [user, setUser] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      setUser(JSON.parse(userStr));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      document.body.classList.remove('guest-mode');
+    } else {
+      document.body.classList.add('guest-mode');
+    }
+    return () => document.body.classList.remove('guest-mode');
+  }, [user]);
+
+  // Keep body class in sync with sidebar state so main content can shift
+  useEffect(() => {
+    if (user && sidebarOpen) {
+      document.body.classList.add('sidebar-open');
+    } else {
+      document.body.classList.remove('sidebar-open');
+    }
+    return () => document.body.classList.remove('sidebar-open');
+  }, [sidebarOpen, user]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    setUser(null);
+    navigate('/');
+  };
+
+  // Show sidebar only when user is logged in
+  if (!user) {
+    return (
+      <nav className="top-nav-guest">
+        <div className="guest-nav-container">
+          <Link to="/" className="guest-logo">School Management System</Link>
+          <div className="guest-nav-links">
+            {location.pathname === '/' && (
+              <>
+                <Link to="/login" className="guest-btn login-btn">Login</Link>
+                <Link to="/signup" className="guest-btn signup-btn">Sign Up</Link>
+              </>
+            )}
+          </div>
         </div>
-        <ul className="nav-menu">
-          <li className="nav-item">
-            <Link to="/" className="nav-link">Home</Link>
+      </nav>
+    );
+  }
+
+  return (
+    <>
+      <button className="sidebar-toggle" onClick={() => setSidebarOpen(!sidebarOpen)}>
+        ☰
+      </button>
+      <nav className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
+        <div className="sidebar-header">
+          <h3>SMS</h3>
+        </div>
+        <ul className="sidebar-menu">
+          <li className="sidebar-item">
+            <Link to="/" className="sidebar-link">🏠 Home</Link>
           </li>
-          <li className="nav-item">
-            <Link to="/students" className="nav-link">Students</Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/teachers" className="nav-link">Teachers</Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/courses" className="nav-link">Courses</Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/attendance" className="nav-link">Attendance</Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/login" className="nav-link login-btn">Login</Link>
-          </li>
+
+          {/* Admin can see everything */}
+          {user.role === 'admin' && (
+            <div className="sidebar-section">
+              <div className="sidebar-section-title">Admin</div>
+              <li className="sidebar-item">
+                <Link to="/admin" className="sidebar-link">📊 Dashboard</Link>
+              </li>
+              <li className="sidebar-item">
+                <Link to="/users" className="sidebar-link">👥 Users</Link>
+              </li>
+              <li className="sidebar-item">
+                <Link to="/students" className="sidebar-link">📚 Students</Link>
+              </li>
+              <li className="sidebar-item">
+                <Link to="/admin/teachers" className="sidebar-link">👨‍🏫 Teachers</Link>
+              </li>
+              <li className="sidebar-item">
+                <Link to="/admin/classes" className="sidebar-link">🏫 Classes</Link>
+              </li>
+              <li className="sidebar-item">
+                <Link to="/admin/announcements" className="sidebar-link">📢 Announcements</Link>
+              </li>
+              <li className="sidebar-item">
+                <Link to="/admin/reports" className="sidebar-link">📈 Reports</Link>
+              </li>
+              <li className="sidebar-item">
+                <Link to="/admin/roles" className="sidebar-link">👤 Roles</Link>
+              </li>
+            </div>
+          )}
+
+          {/* Student can see courses and attendance */}
+          {user.role === 'student' && (
+            <div className="sidebar-section">
+              <div className="sidebar-section-title">Student</div>
+              <li className="sidebar-item">
+                <Link to="/classes" className="sidebar-link">📖 Classes</Link>
+              </li>
+              <li className="sidebar-item">
+                <Link to="/attendance" className="sidebar-link">✓ Attendance</Link>
+              </li>
+            </div>
+          )}
+
+          {/* Teacher can see their dashboard */}
+          {user.role === 'teacher' && (
+            <div className="sidebar-section">
+              <div className="sidebar-section-title">Teacher</div>
+              <li className="sidebar-item">
+                <Link to="/teachers?tab=dashboard" className="sidebar-link">📊 Dashboard</Link>
+              </li>
+              <li className="sidebar-item">
+                <Link to="/teachers?tab=classes" className="sidebar-link">📚 My Classes</Link>
+              </li>
+              <li className="sidebar-item">
+                <Link to="/teachers?tab=attendance" className="sidebar-link">📝 Attendance</Link>
+              </li>
+              <li className="sidebar-item">
+                <Link to="/teachers?tab=marks" className="sidebar-link">✍️ Marks</Link>
+              </li>
+              <li className="sidebar-item">
+                <Link to="/teachers?tab=performance" className="sidebar-link">📈 Performance</Link>
+              </li>
+              <li className="sidebar-item">
+                <Link to="/teachers?tab=materials" className="sidebar-link">📚 Study Materials</Link>
+              </li>
+              <li className="sidebar-item">
+                <Link to="/teachers?tab=announcements" className="sidebar-link">📢 Announcements</Link>
+              </li>
+              <li className="sidebar-item">
+                <Link to="/teachers?tab=profile" className="sidebar-link">⚙️ Profile</Link>
+              </li>
+            </div>
+          )}
         </ul>
-      </div>
-    </nav>
+
+        <div className="sidebar-footer">
+          <div className="user-info">
+            <div className="user-name">{user.name}</div>
+            <div className="user-role">{user.role}</div>
+          </div>
+          <button onClick={handleLogout} className="logout-btn">Logout</button>
+        </div>
+      </nav>
+    </>
   )
 }
 

@@ -1,0 +1,180 @@
+.role-assign {
+  padding: 3rem 2rem;
+  max-width: 1400px;
+}
+
+.role-assign h2 {
+  font-size: 2.5rem;
+  color: #1F2937;
+  margin-bottom: 2rem;
+  font-weight: 700;
+}
+
+.message-banner {
+  background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+  border: 1.5px solid #6EE7B7;
+  color: #047857;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.panel {
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.panel h3 {
+  font-size: 1.5rem;
+  color: #1F2937;
+  margin-bottom: 2rem;
+  font-weight: 700;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  border-radius: 12px;
+}
+
+.roles-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 14px;
+}
+
+.roles-table thead {
+  background: linear-gradient(135deg, #4F46E5 0%, #6366F1 100%);
+}
+
+.roles-table th {
+  color: white;
+  padding: 18px 20px;
+  text-align: left;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.roles-table tbody tr {
+  border-bottom: 1px solid #E5E7EB;
+  transition: all 0.3s ease;
+}
+
+.roles-table tbody tr:hover {
+  background: #F9FAFB;
+  box-shadow: inset 0 0 8px rgba(79, 70, 229, 0.05);
+}
+
+.roles-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.roles-table td {
+  padding: 18px 20px;
+  color: #4B5563;
+  vertical-align: middle;
+}
+
+.roles-table td:first-child {
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.role-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  transition: all 0.3s ease;
+}
+
+.role-badge.role-student {
+  background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%);
+  color: #0C4A6E;
+  border: 1px solid #93C5FD;
+}
+
+.role-badge.role-teacher {
+  background: linear-gradient(135deg, #F3E8FF 0%, #E9D5FF 100%);
+  color: #6B21A8;
+  border: 1px solid #D8B4FE;
+}
+
+.role-badge.role-admin {
+  background: linear-gradient(135deg, #FEF08A 0%, #FEE450 100%);
+  color: #78350F;
+  border: 1px solid #FCD34D;
+}
+
+.role-select {
+  padding: 10px 14px;
+  border: 1.5px solid #E5E7EB;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  background: white;
+  transition: all 0.3s ease;
+  min-width: 140px;
+}
+
+.role-select:hover {
+  border-color: #4F46E5;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+}
+
+.role-select:focus {
+  outline: none;
+  border-color: #4F46E5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+@media (max-width: 1024px) {
+  .role-assign {
+    margin-left: 0;
+    padding: 2rem 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .role-assign {
+    padding: 1.5rem 1rem;
+  }
+
+  .role-assign h2 {
+    font-size: 2rem;
+  }
+
+  .roles-table th,
+  .roles-table td {
+    padding: 12px 10px;
+    font-size: 13px;
+  }
+
+  .role-select {
+    padding: 8px 10px;
+    font-size: 12px;
+    min-width: 120px;
+  }
+}
