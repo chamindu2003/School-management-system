@@ -36,18 +36,25 @@ exports.getTeacherByEmail = async (req, res) => {
 };
 
 exports.createTeacher = async (req, res) => {
-  const { name, email, subject, classes, phone, address, joiningDate } = req.body;
+  const { name, email, subject, classes, phone, address, joiningDate, group } = req.body;
+  const file = req.file;
   try {
     // Allow creating a teacher record even if subject/classes are not yet assigned
-    const teacher = new Teacher({
+    const parsedClasses = Array.isArray(classes) ? classes : (typeof classes === 'string' ? classes.split(',').map(c => c.trim()).filter(Boolean) : []);
+    const teacherData = {
       name,
       email,
       subject: subject || undefined,
-      classes: Array.isArray(classes) ? classes : [],
+      group: group || 'Unassigned',
+      classes: parsedClasses,
       phone,
       address,
       joiningDate
-    });
+    };
+    if (file) {
+      teacherData.photo = `/uploads/${file.filename}`;
+    }
+    const teacher = new Teacher(teacherData);
     await teacher.save();
     res.status(201).json({ teacher });
   } catch (error) {
@@ -57,6 +64,13 @@ exports.createTeacher = async (req, res) => {
 
 exports.updateTeacher = async (req, res) => {
   try {
+    // If multipart/form-data contained a file, multer placed it on req.file
+    if (req.file) {
+      req.body.photo = `/uploads/${req.file.filename}`;
+    }
+    if (req.body.classes && typeof req.body.classes === 'string') {
+      req.body.classes = req.body.classes.split(',').map(c => c.trim()).filter(Boolean);
+    }
     const teacher = await Teacher.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!teacher) return res.status(404).json({ message: 'Teacher not found' });
     res.status(200).json({ teacher });

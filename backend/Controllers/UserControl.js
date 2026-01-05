@@ -15,7 +15,9 @@ const getAllUser = async (req, res, next)=> {
     return res.status(200).json({ users });
 };
 const addUser = async (req, res, next) => {
-    const { name, email, password, role, class: studentClass } = req.body;
+    const { name, email, password, role, class: studentClass, group: studentGroup } = req.body;
+    // multer will place file info on req.file if provided
+    const file = req.file;
 
     if (!name || !email || !password || !role) {
         return res.status(400).json({ message: "Missing required fields" });
@@ -28,7 +30,12 @@ const addUser = async (req, res, next) => {
             return res.status(409).json({ message: "User already exists" });
         }
 
-        const user = new User({ name, email, password, role });
+        const userData = { name, email, password, role };
+        if (file) {
+            // store public-accessible path
+            userData.photo = `/uploads/${file.filename}`;
+        }
+        const user = new User(userData);
         await user.save();
         // If new user is a student, create a student profile so admin can see them
         let student = null;
@@ -49,7 +56,8 @@ const addUser = async (req, res, next) => {
                     name: name,
                     email: email,
                     rollNumber: rollNumber,
-                    class: studentClass || 'Unassigned'
+                    class: studentClass || 'Unassigned',
+                    group: studentGroup || 'Unassigned'
                 });
                 await student.save();
             } catch (sErr) {
@@ -79,23 +87,38 @@ const getUserById = async (req, res, next) => {
     return res.status(200).json({ users });
 };
 const updateUser = async(req, res, next)=>{
-
     const id = req.params.id;
     const {name,email,password,role} = req.body;
-
-    let users;
+    const file = req.file;
 
     try{
-        users = await User.findByIdAndUpdate(id,
-            {name:name, email:email, password:password, role:role}
-        );
+        const update = { };
+        if (name) update.name = name;
+        if (email) update.email = email;
+        if (password) update.password = password;
+        if (role) update.role = role;
+        if (file) update.photo = `/uploads/${file.filename}`;
+
+        const users = await User.findByIdAndUpdate(id, update, { new: true });
+        if(!users){
+            return res.status(404).json({message:"unable update user"});
+        }
+
+        // If this user has a student profile, keep student.photo in sync
+        try {
+          const student = await Student.findOne({ userId: users._id });
+          if (student && update.photo) {
+            await Student.findByIdAndUpdate(student._id, { photo: update.photo });
+          }
+        } catch (syncErr) {
+          console.error('Failed to sync student photo:', syncErr);
+        }
+
+        return res.status(200).json({ users });
     }catch(err){
         console.log(err);
+        return res.status(500).json({ message: 'Unable to update user' });
     }
-    if(!users){
-        return res.status(404).json({message:"unable update user"});
-    }
-    return res.status(200).json({ users });
 };
 const deleteUser = async(req, res, next) =>{
     const id = req.params.id;

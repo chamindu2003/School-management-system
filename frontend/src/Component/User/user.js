@@ -17,6 +17,8 @@ function User() {
     password: '',
     role: 'student'
   });
+  const [photoFile, setPhotoFile] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
   const [showForm, setShowForm] = useState(false);
@@ -30,13 +32,34 @@ function User() {
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setPhotoFile(file);
+      const reader = new FileReader();
+      reader.onload = () => setPhotoPreview(reader.result);
+      reader.readAsDataURL(file);
+    } else {
+      setPhotoFile(null);
+      setPhotoPreview('');
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (isEditing) {
       // Update user
       try {
-        await axios.put(`${URL}/${editId}`, formData);
+        // send FormData if photo present
+        if (photoFile) {
+          const fd = new FormData();
+          Object.keys(formData).forEach(k => fd.append(k, formData[k]));
+          fd.append('photo', photoFile);
+          await axios.put(`${URL}/${editId}`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+        } else {
+          await axios.put(`${URL}/${editId}`, formData);
+        }
         alert('User updated successfully!');
         resetForm();
         fetchHandler().then((data) => setUsers(data.users || []));
@@ -47,7 +70,14 @@ function User() {
     } else {
       // Add new user
       try {
-        await axios.post(URL, formData);
+        if (photoFile) {
+          const fd = new FormData();
+          Object.keys(formData).forEach(k => fd.append(k, formData[k]));
+          fd.append('photo', photoFile);
+          await axios.post(URL, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+        } else {
+          await axios.post(URL, formData);
+        }
         alert('User added successfully!');
         resetForm();
         fetchHandler().then((data) => setUsers(data.users || []));
@@ -159,6 +189,11 @@ function User() {
                 <option value="admin">Admin</option>
               </select>
             </div>
+              <div className="form-group">
+                <label>Photo (optional)</label>
+                <input type="file" accept="image/*" onChange={handleFileChange} />
+                {photoPreview && <img src={photoPreview} alt="preview" style={{width:64,height:64,objectFit:'cover',borderRadius:8,marginTop:8}} />}
+              </div>
             <div className="form-actions">
               <button type="submit" className="btn-submit">
                 {isEditing ? 'Update User' : 'Add User'}

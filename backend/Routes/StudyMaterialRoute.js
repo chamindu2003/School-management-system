@@ -8,6 +8,7 @@ const {
   getClassMaterials,
   getTeacherMaterials,
   getSubjectMaterials,
+  getMaterialsForClassPublic,
   deleteStudyMaterial,
   updateStudyMaterial
 } = require('../Controllers/StudyMaterialController');
@@ -52,6 +53,9 @@ router.post('/upload', upload.single('file'), uploadStudyMaterial);
 
 // Get class materials
 router.get('/class', getClassMaterials);
+
+// Get materials for a class (students view)
+router.get('/for-class', getMaterialsForClassPublic);
 
 // Get all teacher materials
 router.get('/', getTeacherMaterials);

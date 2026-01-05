@@ -317,7 +317,7 @@ function TeacherDashboard() {
           {activeTab === 'attendance' && <AttendanceMarkingComponent user={user} teacher={teacher} />}
           {activeTab === 'marks' && <MarksManagementComponent user={user} />}
           {activeTab === 'performance' && <StudentPerformanceComponent user={user} teacherClasses={teacher.classes || []} />}
-          {activeTab === 'materials' && <StudyMaterialComponent user={user} />}
+          {activeTab === 'materials' && <StudyMaterialComponent user={user} teacher={teacher} />}
           {activeTab === 'announcements' && <AnnouncementsComponent user={user} />}
           {activeTab === 'profile' && <ProfileManagementComponent user={user} teacher={teacher} setTeacher={setTeacher} />}
         </div>

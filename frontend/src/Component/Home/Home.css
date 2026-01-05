@@ -37,6 +37,17 @@
 
 .hero-title{ font-size: clamp(2rem, 5vw, 3.6rem); line-height:1.02; margin:0 0 0.75rem; font-weight:800; text-shadow:0 6px 18px rgba(0,0,0,0.45);} 
 .hero-subtitle{ font-size: clamp(1rem, 2.2vw, 1.3rem); color: rgba(255,255,255,0.92); margin-bottom:1.25rem; }
+
+/* School logo in hero */
+.hero-logo {
+  width: 84px;
+  height: 84px;
+  object-fit: contain;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.9);
+  padding: 8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+}
 .hero-buttons{ display:flex; gap:1rem; flex-wrap:wrap; }
 .btn{ border-radius:10px; padding:0.85rem 1.25rem; font-weight:700; cursor:pointer; border:0; }
 .btn-primary{ background: linear-gradient(90deg,var(--primary-1),var(--primary-2)); color:white; box-shadow: 0 8px 24px rgba(79,70,229,0.18);} 
@@ -74,6 +85,7 @@
   .hero-inner{ flex-direction:column-reverse; padding:2.5rem 1rem; }
   .hero-visual{ width:100%; min-height:200px; }
   .hero-copy{ text-align:center; }
+  .hero-logo{ margin: 0 auto; }
 }
 
 @media (max-width:480px){

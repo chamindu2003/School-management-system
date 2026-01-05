@@ -23,16 +23,17 @@ const StudyMaterialSchema = new mongoose.Schema({
   },
   materialType: {
     type: String,
-    enum: ['Note', 'Assignment', 'Resource', 'Other'],
+    enum: ['Note', 'Assignment', 'Resource', 'Video', 'Other'],
     required: true
   },
   fileUrl: {
-    type: String,
-    required: true
+    type: String
   },
   fileName: {
-    type: String,
-    required: true
+    type: String
+  },
+  videoUrl: {
+    type: String
   },
   uploadDate: {
     type: Date,

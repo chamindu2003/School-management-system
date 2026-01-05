@@ -20,6 +20,8 @@ const UserSchema = new Schema({
         default:'student',
         
     }
+    ,
+    photo: { type: String }
 },{timestamps:true});
 
 module.exports = mongoose.model("UserModel", UserSchema);

@@ -69,7 +69,9 @@ function Nav() {
     return (
       <nav className="top-nav-guest">
         <div className="guest-nav-container">
-          <Link to="/" className="guest-logo">{schoolName}</Link>
+          <Link to="/" className="guest-logo">
+            <img src="/images/school-logo.png" alt="School" className="guest-header-logo" />
+          </Link>
           <div className="guest-nav-links">
             {location.pathname === '/' && (
               <>
@@ -86,7 +88,9 @@ function Nav() {
     return (
       <nav className="top-nav-student">
         <div className="student-nav-container">
-          <Link to="/" className="guest-logo">{schoolName}</Link>
+          <Link to="/" className="guest-logo">
+            <img src="/images/school-logo.png" alt="School" className="guest-header-logo" />
+          </Link>
           <div style={{ marginLeft: 'auto' }}>
             {/* Intentionally empty for students — header provides logout */}
           </div>
@@ -190,8 +194,17 @@ function Nav() {
 
         <div className="sidebar-footer">
           <div className="user-info">
-            <div className="user-name">{user.name}</div>
-            <div className="user-role">{user.role}</div>
+            {user.photo && (
+              <img
+                src={user.photo.startsWith('http') ? user.photo : `${process.env.REACT_APP_API_BASE || 'http://localhost:5001'}${user.photo}`}
+                alt={user.name}
+                className="user-avatar"
+              />
+            )}
+            <div>
+              <div className="user-name">{user.name}</div>
+              <div className="user-role">{user.role}</div>
+            </div>
           </div>
           <button onClick={handleLogout} className="logout-btn">Logout</button>
         </div>
