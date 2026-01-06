@@ -140,6 +140,9 @@ function Nav() {
               <li className="sidebar-item">
                 <Link to="/admin/roles" className="sidebar-link">👤 Roles</Link>
               </li>
+              <li className="sidebar-item">
+                <Link to="/admin/profile" className="sidebar-link">⚙️ Profile</Link>
+              </li>
             </div>
           )}
 
