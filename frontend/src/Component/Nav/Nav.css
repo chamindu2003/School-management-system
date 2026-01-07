@@ -15,17 +15,18 @@
   backdrop-filter: blur(10px);
 }
 
-.guest-nav-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* Modern tweaks for sidebar: icons, subtle rounded edge, and smoother hover */
+.sidebar {
+  border-top-right-radius: 14px;
+  border-bottom-right-radius: 14px;
+  overflow: hidden;
+  backdrop-filter: blur(6px);
 }
 
-.guest-logo {
-  color: white;
+.sidebar .sidebar-link {
+  display: flex;
+  align-items: center;
+
   text-decoration: none;
   font-size: 1.2rem;
   font-weight: 700;
