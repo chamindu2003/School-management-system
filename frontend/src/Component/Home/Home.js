@@ -27,7 +27,7 @@ function Home() {
 
             <div className="hero-cta">
               <button className="btn btn-primary" onClick={handleGetStarted}>Get Started</button>
-              <button className="btn btn-secondary" onClick={handleLearnMore}>Learn More</button>
+              <button className="btn btn-secondary" onClick={handleLearnMore}>About Us</button>
             </div>
 
             {/* Hero image editor removed per request */}

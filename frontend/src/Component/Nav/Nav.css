@@ -1,7 +1,7 @@
 /* Guest Navigation (when not logged in) */
 .top-nav-guest {
   background: linear-gradient(135deg, rgba(79, 70, 229, 0.9) 0%, rgba(99, 102, 241, 0.9) 50%, rgba(139, 92, 246, 0.9) 100%);
-  padding: 0.6rem 0;
+  padding: 0.6rem 1rem;
   box-shadow: 0 8px 32px rgba(79, 70, 229, 0.2);
   position: fixed;
   top: 0;
@@ -39,6 +39,13 @@
   gap: 1rem;
   align-items: center;
 }
+
+.guest-logo{ display:flex; align-items:center; gap:12px; text-decoration:none; color:white; font-weight:800; }
+.guest-logo-img{ width:44px; height:44px; object-fit:contain; border-radius:10px; background: rgba(255,255,255,0.9); padding:6px; box-shadow:0 6px 18px rgba(0,0,0,0.12); }
+.guest-logo-text{ font-size:1.05rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:420px; }
+
+/* Ensure nav contents sit inside the gradient bar with comfortable spacing */
+.top-nav-inner{ max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:0 0.5rem; }
 
 .guest-btn {
   text-decoration: none;

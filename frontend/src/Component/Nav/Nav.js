@@ -68,8 +68,12 @@ function Nav() {
   if (!user) {
     return (
       <nav className="top-nav-guest">
-        <div className="guest-nav-container">
-          <Link to="/" className="guest-logo">{schoolName}</Link>
+        <div className="top-nav-inner">
+          <Link to="/" className="guest-logo">
+            <img src="/images/school-logo.png" alt={`${schoolName} logo`} className="guest-logo-img" />
+            <span className="guest-logo-text"></span>
+          </Link>
+
           <div className="guest-nav-links">
             {location.pathname === '/' && (
               <>
