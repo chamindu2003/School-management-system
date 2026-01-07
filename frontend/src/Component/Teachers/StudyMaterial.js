@@ -4,7 +4,7 @@ import axios from 'axios';
 const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:5001';
 const STUDY_MATERIAL_URL = `${API_BASE}/study-materials`;
 
-function StudyMaterialComponent({ user }) {
+function StudyMaterialComponent({ user, teacher }) {
   const [materials, setMaterials] = useState([]);
   const [selectedClass, setSelectedClass] = useState('');
   const [loading, setLoading] = useState(false);
@@ -13,10 +13,11 @@ function StudyMaterialComponent({ user }) {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    subject: user.subject || '',
+    subject: user.subject || (teacher && teacher.subject) || '',
     class: '',
     materialType: 'Note',
-    file: null
+    file: null,
+    videoUrl: ''
   });
 
   useEffect(() => {
@@ -53,8 +54,8 @@ function StudyMaterialComponent({ user }) {
 
   const handleUpload = async (e) => {
     e.preventDefault();
-
-    if (!formData.title || !formData.file || !formData.class) {
+    // Validation per material type
+    if (!formData.title || !formData.class) {
       setMessage('Please fill in required fields');
       return;
     }
@@ -67,7 +68,22 @@ function StudyMaterialComponent({ user }) {
       data.append('subject', formData.subject);
       data.append('class', formData.class);
       data.append('materialType', formData.materialType);
-      data.append('file', formData.file);
+
+      if (formData.materialType === 'Video') {
+        if (!formData.videoUrl) {
+          setMessage('Please provide a video link');
+          setLoading(false);
+          return;
+        }
+        data.append('videoUrl', formData.videoUrl);
+      } else {
+        if (!formData.file) {
+          setMessage('Please attach a file for this material type');
+          setLoading(false);
+          return;
+        }
+        data.append('file', formData.file);
+      }
 
       await axios.post(`${STUDY_MATERIAL_URL}/upload`, data, {
         headers: { 'Content-Type': 'multipart/form-data' }
@@ -89,10 +105,11 @@ function StudyMaterialComponent({ user }) {
     setFormData({
       title: '',
       description: '',
-      subject: user.subject || '',
+      subject: user.subject || (teacher && teacher.subject) || '',
       class: '',
       materialType: 'Note',
-      file: null
+      file: null,
+      videoUrl: ''
     });
     setShowForm(false);
   };
@@ -132,7 +149,7 @@ function StudyMaterialComponent({ user }) {
           className="form-control"
         >
           <option value="">All Classes</option>
-          {user.classes && user.classes.map((cls, idx) => (
+          {(user.classes || (teacher && teacher.classes) || []).map((cls, idx) => (
             <option key={idx} value={cls}>{cls}</option>
           ))}
         </select>
@@ -188,7 +205,7 @@ function StudyMaterialComponent({ user }) {
                   required
                 >
                   <option value="">Choose Class</option>
-                  {user.classes && user.classes.map((cls, idx) => (
+                  {(user.classes || (teacher && teacher.classes) || []).map((cls, idx) => (
                     <option key={idx} value={cls}>{cls}</option>
                   ))}
                 </select>
@@ -203,6 +220,7 @@ function StudyMaterialComponent({ user }) {
                   className="form-control"
                 >
                   <option value="Note">Note</option>
+                  <option value="Video">Video (link)</option>
                   <option value="Assignment">Assignment</option>
                   <option value="Resource">Resource</option>
                   <option value="Other">Other</option>
@@ -210,15 +228,21 @@ function StudyMaterialComponent({ user }) {
               </div>
             </div>
 
-            <div className="form-group">
-              <label>File:</label>
-              <input 
-                type="file"
-                onChange={handleFileChange}
-                className="form-control"
-                required
-              />
-            </div>
+            {formData.materialType === 'Video' ? (
+              <div className="form-group">
+                <label>Video URL (YouTube/Vimeo etc.):</label>
+                <input type="url" name="videoUrl" value={formData.videoUrl} onChange={handleInputChange} className="form-control" placeholder="https://" />
+              </div>
+            ) : (
+              <div className="form-group">
+                <label>File:</label>
+                <input 
+                  type="file"
+                  onChange={handleFileChange}
+                  className="form-control"
+                />
+              </div>
+            )}
 
             <button 
               type="submit"
@@ -235,7 +259,7 @@ function StudyMaterialComponent({ user }) {
         <h3>Your Materials {selectedClass && `(${selectedClass})`}</h3>
         {filteredMaterials.length > 0 ? (
           <div className="materials-grid">
-            {filteredMaterials.map(material => (
+                {filteredMaterials.map(material => (
               <div key={material._id} className="material-card">
                 <div className="material-header">
                   <h4>{material.title}</h4>
@@ -247,12 +271,14 @@ function StudyMaterialComponent({ user }) {
                 <p className="material-info">
                   <strong>Class:</strong> {material.class}<br/>
                   <strong>Subject:</strong> {material.subject}<br/>
-                  <strong>File:</strong> {material.fileName}
+                  {material.materialType !== 'Video' && <><strong>File:</strong> {material.fileName}</>}
                 </p>
                 <div className="material-actions">
-                  <a href={material.fileUrl} target="_blank" rel="noopener noreferrer" className="btn btn-sm">
-                    Download
-                  </a>
+                  {material.materialType === 'Video' ? (
+                    <a href={material.videoUrl} target="_blank" rel="noopener noreferrer" className="btn btn-sm">Open Video</a>
+                  ) : (
+                    <a href={material.fileUrl} target="_blank" rel="noopener noreferrer" className="btn btn-sm">Download</a>
+                  )}
                   <button 
                     onClick={() => handleDelete(material._id)}
                     className="btn btn-sm btn-danger"

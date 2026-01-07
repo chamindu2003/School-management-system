@@ -16,6 +16,7 @@ import Login from './Component/Login/Login';
 import User from './Component/User/user';
 import Signup from './Component/signup/Signup';
 import AdminDashboard from './Component/Admin/AdminDashboard';
+import AdminProfile from './Component/Admin/AdminProfile';
 import ProtectedRoute from './Component/ProtectedRoute';
 
 function App() {
@@ -79,6 +80,11 @@ function App() {
         <Route path="/admin/announcements" element={
           <ProtectedRoute allowedRoles={['admin']}>
             <AnnouncementsManagement />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/profile" element={
+          <ProtectedRoute allowedRoles={['admin']}>
+            <AdminProfile />
           </ProtectedRoute>
         } />
         <Route path="/admin/reports" element={

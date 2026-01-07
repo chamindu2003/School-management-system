@@ -113,7 +113,7 @@ function TeachersDashboard() {
       <div className="teacher-header">
         <h1>Teachers Dashboard</h1>
         {user?.role === 'admin' && (
-          <button className="btn-add" onClick={() => setShowForm(!showForm)}>
+          <button className="btn-add top-right" onClick={() => setShowForm(!showForm)}>
             {showForm ? 'Close Form' : '+ Add Teacher'}
           </button>
         )}

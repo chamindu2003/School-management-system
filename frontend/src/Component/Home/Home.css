@@ -25,18 +25,32 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 1.25rem;
+  padding: 0 1.25rem 6rem;
   position: relative;
   color: white;
 }
+
+/* Make room for fixed top nav and tighten layout */
+.modern-hero { padding-top: 84px; }
 
 .hero-overlay{ position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.04)); pointer-events:none; }
 .hero-inner{ position:relative; width:100%; max-width:1200px; display:flex; gap:2rem; align-items:center; justify-content:space-between; padding:4rem 1.5rem; }
 .hero-copy{ flex:1 1 560px; }
 .hero-visual{ flex:1 1 420px; min-height:320px; border-radius:12px; background: linear-gradient(135deg,var(--primary-1),var(--primary-2)); box-shadow: 0 10px 30px rgba(15,23,42,0.25); opacity:0.95; }
 
-.hero-title{ font-size: clamp(2rem, 5vw, 3.6rem); line-height:1.02; margin:0 0 0.75rem; font-weight:800; text-shadow:0 6px 18px rgba(0,0,0,0.45);} 
-.hero-subtitle{ font-size: clamp(1rem, 2.2vw, 1.3rem); color: rgba(255,255,255,0.92); margin-bottom:1.25rem; }
+.hero-title{ font-size: clamp(2.2rem, 6vw, 4rem); line-height:1.02; margin:0 0 0.75rem; font-weight:900; text-shadow: 0 6px 18px rgba(0,0,0,0.48), 0 2px 0 rgba(255,255,255,0.04);} 
+.hero-subtitle{ font-size: clamp(1rem, 2.2vw, 1.2rem); color: rgba(255,255,255,0.92); margin-bottom:1.25rem; }
+
+/* School logo in hero */
+.hero-logo {
+  width: 84px;
+  height: 84px;
+  object-fit: contain;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.9);
+  padding: 8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+}
 .hero-buttons{ display:flex; gap:1rem; flex-wrap:wrap; }
 .btn{ border-radius:10px; padding:0.85rem 1.25rem; font-weight:700; cursor:pointer; border:0; }
 .btn-primary{ background: linear-gradient(90deg,var(--primary-1),var(--primary-2)); color:white; box-shadow: 0 8px 24px rgba(79,70,229,0.18);} 
@@ -74,6 +88,7 @@
   .hero-inner{ flex-direction:column-reverse; padding:2.5rem 1rem; }
   .hero-visual{ width:100%; min-height:200px; }
   .hero-copy{ text-align:center; }
+  .hero-logo{ margin: 0 auto; }
 }
 
 @media (max-width:480px){
@@ -125,7 +140,7 @@
 
 .btn-primary {
   background: white;
-  color: #667eea;
+  color: #4F46E5;
 }
 
 .btn-primary:hover {
@@ -376,8 +391,8 @@
 .hero-cta{ display:flex; gap:1rem; margin-top:1.25rem; }
 .btn-secondary{ background: transparent; color: var(--primary-1); border: 2px solid rgba(79,70,229,0.12); padding:0.7rem 1rem; border-radius:10px; }
 
-.hero-stats{ display:flex; gap:1.25rem; margin-top:1.5rem; list-style:none; padding:0; }
-.hero-stats li{ background:white; padding:0.6rem 1rem; border-radius:8px; box-shadow:0 6px 18px rgba(15,23,42,0.05); display:flex; flex-direction:column; align-items:flex-start; }
+.hero-stats{ display:flex; gap:1.25rem; margin-top:1.75rem; list-style:none; padding:0; align-items:stretch; }
+.hero-stats li{ background:white; padding:0.9rem 1.1rem; border-radius:10px; box-shadow:0 10px 30px rgba(2,6,23,0.12); display:flex; flex-direction:column; align-items:flex-start; min-width:150px; }
 .hero-stats li strong{ font-size:0.95rem; color:var(--primary-1); }
 .hero-stats li span{ font-size:0.85rem; color:var(--muted); }
 
@@ -385,6 +400,19 @@
 .visual-header{ font-weight:700; margin-bottom:0.5rem; }
 .visual-body{ display:flex; flex-direction:column; gap:0.5rem; }
 .stat-row{ display:flex; justify-content:space-between; padding:0.5rem 0; border-bottom:1px dashed rgba(15,23,42,0.04); }
+
+/* Make hero content align left on wide screens, like the reference design */
+@media (min-width: 900px){
+  .hero-inner{ justify-content:flex-start; }
+  .hero-copy{ max-width:720px; }
+  .hero-buttons{ justify-content:flex-start; }
+  .hero-inner{ padding-bottom:4.5rem; }
+}
+
+@media (max-width: 900px){
+  .hero-stats{ position: static; margin-top:1.5rem; justify-content:center; }
+  .modern-hero { padding-top: 72px; }
+}
 
 .features-section{ padding:3rem 1rem; max-width:1200px; margin:0 auto; }
 .cta-section{ display:flex; justify-content:center; padding:2rem 1rem; }

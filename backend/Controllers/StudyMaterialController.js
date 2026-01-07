@@ -8,7 +8,26 @@ exports.uploadStudyMaterial = async (req, res) => {
     const { title, description, subject, class: className, materialType } = req.body;
     const teacherId = req.user.id;
     
-    if (!req.file) {
+    // Support two modes: file upload (PDF/etc.) or video link (materialType === 'Video')
+    const file = req.file;
+    const videoUrl = req.body.videoUrl;
+
+    if (materialType === 'Video') {
+      if (!videoUrl) return res.status(400).json({ message: 'videoUrl is required for Video material' });
+      const material = new StudyMaterial({
+        teacher: teacherId,
+        title,
+        description,
+        subject,
+        class: className,
+        materialType,
+        videoUrl
+      });
+      await material.save();
+      return res.status(201).json({ message: 'Video material saved', material });
+    }
+
+    if (!file) {
       return res.status(400).json({ message: 'No file uploaded' });
     }
 
@@ -19,8 +38,8 @@ exports.uploadStudyMaterial = async (req, res) => {
       subject,
       class: className,
       materialType,
-      fileUrl: `/uploads/${req.file.filename}`,
-      fileName: req.file.originalname
+      fileUrl: `/uploads/${file.filename}`,
+      fileName: file.originalname
     });
 
     await material.save();
@@ -57,6 +76,21 @@ exports.getTeacherMaterials = async (req, res) => {
 
     const materials = await StudyMaterial.find({
       teacher: teacherId
+    }).sort({ uploadDate: -1 });
+
+    res.status(200).json({ materials });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Public for authenticated users: Get study materials for a class (all teachers)
+exports.getMaterialsForClassPublic = async (req, res) => {
+  try {
+    const { class: className } = req.query;
+
+    const materials = await StudyMaterial.find({
+      class: className
     }).sort({ uploadDate: -1 });
 
     res.status(200).json({ materials });

@@ -24,6 +24,10 @@ function StudentsDashboard() {
   const [schedule, setSchedule] = useState([]);
   const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [profileForm, setProfileForm] = useState({ name: '', phone: '', address: '', class: '', group: '' });
+  const [profilePhotoFile, setProfilePhotoFile] = useState(null);
+  const [profilePhotoPreview, setProfilePhotoPreview] = useState('');
 
   // Admin-only management state
   const [students, setStudents] = useState([]);
@@ -32,6 +36,7 @@ function StudentsDashboard() {
     email: '',
     rollNumber: '',
     class: '',
+    group: 'Unassigned',
     phone: '',
     dateOfBirth: '',
     address: ''
@@ -64,7 +69,7 @@ function StudentsDashboard() {
         params: { email: userData.email }
       });
       const studentData = studentRes.data.students?.[0] || studentRes.data.student;
-      setStudent(studentData || { name: userData.name, class: 'N/A', rollNumber: 'N/A' });
+      setStudent(studentData || { name: userData.name, class: 'N/A', rollNumber: 'N/A', group: 'Unassigned' });
 
       // Compute stats
       const mockAttendance = Math.floor(Math.random() * (95 - 70) + 70);
@@ -119,12 +124,13 @@ function StudentsDashboard() {
         setTodaySchedule(mockSchedule);
       }
 
-      // Fallback/mock materials
-      const mockMaterials = [
-        { title: 'Algebra Chapter 5', subject: 'Mathematics', date: '2025-12-20' },
-        { title: 'Shakespeare Study Guide', subject: 'English', date: '2025-12-19' }
-      ];
-      setMaterials(mockMaterials);
+      // Fetch class-specific materials so students can download or open videos
+      const matsRes = await axios.get(`${API_BASE}/study-materials/for-class`, { params: { class: studentData?.class } }).catch(() => null);
+      if (matsRes && matsRes.data) {
+        setMaterials(matsRes.data.materials || []);
+      } else {
+        setMaterials([]);
+      }
 
       // Mock alerts
       const mockAlerts = [
@@ -135,7 +141,70 @@ function StudentsDashboard() {
     } catch (error) {
       console.error('Error loading student dashboard:', error);
       // Fallback to minimal profile
-      setStudent({ name: userData.name, class: 'N/A', rollNumber: 'N/A' });
+      setStudent({ name: userData.name, class: 'N/A', rollNumber: 'N/A', group: 'Unassigned' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Edit profile helpers for student
+  const startEditProfile = () => {
+    setProfileForm({
+      name: student.name || user.name,
+      phone: student.phone || '',
+      address: student.address || '',
+      class: student.class || '',
+      group: student.group || 'Unassigned'
+    });
+    setProfilePhotoPreview(student.photo ? (student.photo.startsWith('http') ? student.photo : `${API_BASE}${student.photo}`) : (user?.photo ? (user.photo.startsWith('http') ? user.photo : `${API_BASE}${user.photo}`) : ''));
+    setEditingProfile(true);
+  };
+
+  const handleProfileInput = (e) => {
+    const { name, value } = e.target;
+    setProfileForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleProfileFile = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setProfilePhotoFile(file);
+      const reader = new FileReader();
+      reader.onload = () => setProfilePhotoPreview(reader.result);
+      reader.readAsDataURL(file);
+    } else {
+      setProfilePhotoFile(null);
+      setProfilePhotoPreview('');
+    }
+  };
+
+  const submitProfile = async (e) => {
+    e.preventDefault();
+    if (!student?._id) return;
+    try {
+      setLoading(true);
+      const fd = new FormData();
+      fd.append('name', profileForm.name);
+      fd.append('phone', profileForm.phone || '');
+      fd.append('address', profileForm.address || '');
+      fd.append('class', profileForm.class || '');
+      fd.append('group', profileForm.group || 'Unassigned');
+      if (profilePhotoFile) fd.append('photo', profilePhotoFile);
+
+      const res = await axios.put(`${STUDENTS_URL}/${student._id}`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+      const updated = res.data.student;
+      setStudent(updated);
+      // update localStorage user.photo if present
+      if (updated.photo) {
+        const stored = JSON.parse(localStorage.getItem('user') || '{}');
+        stored.photo = updated.photo;
+        localStorage.setItem('user', JSON.stringify(stored));
+        setUser(stored);
+      }
+      setEditingProfile(false);
+    } catch (err) {
+      console.error('Failed to update profile', err);
+      alert('Failed to update profile');
     } finally {
       setLoading(false);
     }
@@ -180,6 +249,7 @@ function StudentsDashboard() {
       email: student.email,
       rollNumber: student.rollNumber,
       class: student.class,
+      group: student.group || 'Unassigned',
       phone: student.phone || '',
       dateOfBirth: student.dateOfBirth || '',
       address: student.address || ''
@@ -208,6 +278,7 @@ function StudentsDashboard() {
       email: '',
       rollNumber: '',
       class: '',
+      group: 'Unassigned',
       phone: '',
       dateOfBirth: '',
       address: ''
@@ -229,7 +300,12 @@ function StudentsDashboard() {
   return (
     <div className="student-container">
       <div className="student-header">
-        <h1>📚 Student Dashboard</h1>
+        <div style={{display:'flex', alignItems:'center', gap:12}}>
+          {user?.photo && (
+            <img src={user.photo.startsWith('http') ? user.photo : `${API_BASE}${user.photo}`} alt={user.name} style={{width:56, height:56, borderRadius: '50%', objectFit: 'cover'}} />
+          )}
+          <h1>📚 Student Dashboard</h1>
+        </div>
         <button className="logout-btn" onClick={handleLogout}>Logout</button>
       </div>
 
@@ -238,9 +314,54 @@ function StudentsDashboard() {
         <>
           <div className="student-form-container">
             <h2>Welcome, {student.name || user.name}!</h2>
-            <p>Class: <strong>{student.class}</strong> | Roll: <strong>{student.rollNumber}</strong></p>
+            <p>Class: <strong>{student.class}</strong> | Roll: <strong>{student.rollNumber}</strong> | Group: <strong>{student.group || 'Unassigned'}</strong></p>
             <p style={{color: '#718096', marginTop: '0.5rem'}}>Today is {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+            <div style={{marginTop:12}}>
+              <button className="btn" onClick={startEditProfile}>Edit Profile</button>
+            </div>
           </div>
+
+          {editingProfile && (
+            <div className="student-form-container">
+              <h3>Edit Profile</h3>
+              <form onSubmit={submitProfile} className="student-form">
+                <div className="form-group">
+                  <label>Name</label>
+                  <input name="name" value={profileForm.name} onChange={handleProfileInput} />
+                </div>
+                <div className="form-group">
+                  <label>Phone</label>
+                  <input name="phone" value={profileForm.phone} onChange={handleProfileInput} />
+                </div>
+                <div className="form-group">
+                  <label>Address</label>
+                  <textarea name="address" value={profileForm.address} onChange={handleProfileInput} rows={2} />
+                </div>
+                <div className="form-group">
+                  <label>Class</label>
+                  <input name="class" value={profileForm.class} onChange={handleProfileInput} />
+                </div>
+                <div className="form-group">
+                  <label>Group</label>
+                  <select name="group" value={profileForm.group} onChange={handleProfileInput}>
+                    <option value="Unassigned">Unassigned</option>
+                    <option value="සීල">සීල</option>
+                    <option value="සමාධි">සමාධි</option>
+                    <option value="ප්‍රඥා">ප්‍රඥා</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Photo (optional)</label>
+                  <input type="file" accept="image/*" onChange={handleProfileFile} />
+                </div>
+                {profilePhotoPreview && <div style={{marginBottom:12}}><img src={profilePhotoPreview} alt="preview" style={{width:80,height:80,objectFit:'cover',borderRadius:8}} /></div>}
+                <div className="form-actions">
+                  <button type="submit" className="btn-submit">Save</button>
+                  <button type="button" className="btn-cancel" onClick={() => setEditingProfile(false)}>Cancel</button>
+                </div>
+              </form>
+            </div>
+          )}
 
           {/* Stats Grid */}
           <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '2rem'}}>
@@ -370,9 +491,26 @@ function StudentsDashboard() {
             <div className="student-form-container">
               <h3>📖 Study Materials</h3>
               <ul style={{margin: 0, paddingLeft: '1.5rem'}}>
-                {materials.map((mat, idx) => (
-                  <li key={idx} style={{marginBottom: '0.5rem'}}>
-                    <strong>{mat.title}</strong> ({mat.subject}) - {new Date(mat.date).toLocaleDateString()}
+                {materials.map((mat) => (
+                  <li key={mat._id || mat.title} style={{marginBottom: '0.75rem'}}>
+                    <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                      <div>
+                        <strong>{mat.title}</strong> <span style={{color: '#6B7280'}}>({mat.subject})</span>
+                        <div style={{color: '#374151', fontSize: '0.9rem'}}>
+                          {mat.description}
+                        </div>
+                        <div style={{color: '#9CA3AF', fontSize: '0.85rem'}}>
+                          {mat.uploadDate ? new Date(mat.uploadDate).toLocaleDateString() : (mat.date ? new Date(mat.date).toLocaleDateString() : '')}
+                        </div>
+                      </div>
+                      <div style={{display: 'flex', gap: 8}}>
+                        {mat.materialType === 'Video' ? (
+                          <a href={mat.videoUrl} target="_blank" rel="noopener noreferrer" className="btn btn-sm">Open Video</a>
+                        ) : (
+                          <a href={(mat.fileUrl && mat.fileUrl.startsWith('http')) ? mat.fileUrl : `${API_BASE}${mat.fileUrl}`} target="_blank" rel="noopener noreferrer" className="btn btn-sm">Download{mat.fileName ? ` (${mat.fileName})` : ''}</a>
+                        )}
+                      </div>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -415,6 +553,15 @@ function StudentsDashboard() {
                   <input type="text" id="class" name="class" value={formData.class} onChange={handleInputChange} required />
                 </div>
                 <div className="form-group">
+                  <label htmlFor="group">Group</label>
+                  <select id="group" name="group" value={formData.group || 'Unassigned'} onChange={handleInputChange}>
+                    <option value="Unassigned">Unassigned</option>
+                    <option value="සීල">සීල</option>
+                    <option value="සමාධි">සමාධි</option>
+                    <option value="ප්‍රඥා">ප්‍රඥා</option>
+                  </select>
+                </div>
+                <div className="form-group">
                   <label htmlFor="phone">Phone</label>
                   <input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleInputChange} />
                 </div>
@@ -444,6 +591,7 @@ function StudentsDashboard() {
                     <th>Name</th>
                     <th>Email</th>
                     <th>Class</th>
+                    <th>Group</th>
                     <th>Phone</th>
                     <th>Actions</th>
                   </tr>
@@ -455,6 +603,7 @@ function StudentsDashboard() {
                       <td>{student.name}</td>
                       <td>{student.email}</td>
                       <td>{student.class}</td>
+                      <td>{student.group || 'Unassigned'}</td>
                       <td>{student.phone || 'N/A'}</td>
                       <td>
                         <button className="btn-edit" onClick={() => handleEdit(student)}>Edit</button>

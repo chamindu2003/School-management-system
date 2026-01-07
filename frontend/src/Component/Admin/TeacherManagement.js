@@ -12,11 +12,14 @@ function TeacherManagement() {
     name: '',
     email: '',
     subject: '',
+    group: 'Unassigned',
     classes: '',
     phone: '',
     address: '',
     joiningDate: ''
   });
+  const [photoFile, setPhotoFile] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
   const [showForm, setShowForm] = useState(false);
@@ -45,6 +48,19 @@ function TeacherManagement() {
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setPhotoFile(file);
+      const reader = new FileReader();
+      reader.onload = () => setPhotoPreview(reader.result);
+      reader.readAsDataURL(file);
+    } else {
+      setPhotoFile(null);
+      setPhotoPreview('');
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -55,18 +71,23 @@ function TeacherManagement() {
 
     try {
       setLoading(true);
-      const payload = {
-        ...formData,
-        classes: formData.classes
-          ? formData.classes.split(',').map(c => c.trim()).filter(Boolean)
-          : []
-      };
+      // submit as multipart/form-data (handles optional photo)
+      const fd = new FormData();
+      fd.append('name', formData.name);
+      fd.append('email', formData.email);
+      fd.append('subject', formData.subject);
+      fd.append('group', formData.group || 'Unassigned');
+      fd.append('classes', formData.classes || '');
+      fd.append('phone', formData.phone || '');
+      fd.append('address', formData.address || '');
+      fd.append('joiningDate', formData.joiningDate || '');
+      if (photoFile) fd.append('photo', photoFile);
 
       if (isEditing) {
-        await axios.put(`${TEACHERS_URL}/${editId}`, payload);
+        await axios.put(`${TEACHERS_URL}/${editId}`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
         setMessage('Teacher updated successfully!');
       } else {
-        await axios.post(TEACHERS_URL, payload);
+        await axios.post(TEACHERS_URL, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
         setMessage('Teacher created successfully!');
       }
 
@@ -86,6 +107,7 @@ function TeacherManagement() {
       name: teacher.name,
       email: teacher.email,
       subject: teacher.subject || '',
+      group: teacher.group || 'Unassigned',
       classes: (teacher.classes || []).join(', '),
       phone: teacher.phone || '',
       address: teacher.address || '',
@@ -118,11 +140,14 @@ function TeacherManagement() {
       name: '',
       email: '',
       subject: '',
+      group: 'Unassigned',
       classes: '',
       phone: '',
       address: '',
       joiningDate: ''
     });
+    setPhotoFile(null);
+    setPhotoPreview('');
     setIsEditing(false);
     setEditId(null);
     setShowForm(false);
@@ -189,6 +214,20 @@ function TeacherManagement() {
                   placeholder="e.g., Mathematics, English, Science"
                   required
                 />
+              </div>
+              <div className="form-group">
+                <label>Photo (optional)</label>
+                <input type="file" accept="image/*" name="photo" onChange={handleFileChange} />
+                {photoPreview && <img src={photoPreview} alt="Preview" style={{width:72,height:72,objectFit:'cover',borderRadius:8,marginTop:8}} />}
+              </div>
+              <div className="form-group">
+                <label>Group</label>
+                <select name="group" value={formData.group || 'Unassigned'} onChange={handleInputChange} className="form-control">
+                  <option value="Unassigned">Unassigned</option>
+                  <option value="සීල">සීල</option>
+                  <option value="සමාධි">සමාධි</option>
+                  <option value="ප්‍රඥා">ප්‍රඥා</option>
+                </select>
               </div>
               <div className="form-group">
                 <label>Assigned Classes *</label>
@@ -264,6 +303,7 @@ function TeacherManagement() {
                   <th>Name</th>
                   <th>Email</th>
                   <th>Subject</th>
+                  <th>Group</th>
                   <th>Classes</th>
                   <th>Phone</th>
                   <th>Actions</th>
@@ -278,6 +318,24 @@ function TeacherManagement() {
                     <td>{teacher.email}</td>
                     <td>
                       <span className="subject-badge">{teacher.subject || 'N/A'}</span>
+                    </td>
+                    <td>
+                      <select value={teacher.group || 'Unassigned'} onChange={async (e) => {
+                        const newGroup = e.target.value;
+                        try {
+                          await axios.put(`${TEACHERS_URL}/${teacher._id}`, { group: newGroup });
+                          // update local state
+                          setTeachers(prev => prev.map(t => t._id === teacher._id ? { ...t, group: newGroup } : t));
+                        } catch (err) {
+                          console.error('Failed to update group', err);
+                          setMessage('Failed to update group');
+                        }
+                      }}>
+                        <option value="Unassigned">Unassigned</option>
+                        <option value="සීල">සීල</option>
+                        <option value="සමාධි">සමාධි</option>
+                        <option value="ප්‍රඥා">ප්‍රඥා</option>
+                      </select>
                     </td>
                     <td>
                       <div className="classes-badges">

@@ -17,6 +17,8 @@ function ProfileManagementComponent({ user, teacher, setTeacher }) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [view, setView] = useState('profile'); // 'profile' or 'password'
+  const [profilePhotoFile, setProfilePhotoFile] = useState(null);
+  const [profilePhotoPreview, setProfilePhotoPreview] = useState('');
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -24,6 +26,18 @@ function ProfileManagementComponent({ user, teacher, setTeacher }) {
       ...prev,
       [name]: value
     }));
+  };
+
+  const handlePhotoChange = (e) => {
+    const f = e.target.files?.[0];
+    setProfilePhotoFile(f || null);
+    if (f) {
+      const reader = new FileReader();
+      reader.onload = () => setProfilePhotoPreview(reader.result);
+      reader.readAsDataURL(f);
+    } else {
+      setProfilePhotoPreview('');
+    }
   };
 
   const handleUpdateProfile = async (e) => {
@@ -143,6 +157,16 @@ function ProfileManagementComponent({ user, teacher, setTeacher }) {
               className="form-control"
               required
             />
+          </div>
+
+          <div className="form-group">
+            <label>Photo (optional):</label>
+            <input type="file" accept="image/*" onChange={handlePhotoChange} />
+            {profilePhotoPreview && (
+              <div style={{ marginTop: 8 }}>
+                <img src={profilePhotoPreview} alt="preview" style={{ width: 96, height: 96, borderRadius: '50%' }} />
+              </div>
+            )}
           </div>
 
           <div className="form-group">

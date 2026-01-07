@@ -16,12 +16,18 @@ function Home() {
       <header className="hero-section modern-hero" style={{ backgroundImage: heroBackground }}>
         <div className="hero-inner modern-inner">
           <div className="hero-copy modern-copy">
-            <h1 className="hero-title">Sri Somananda Dhamma School</h1>
+            <div style={{display: 'flex', alignItems: 'center', gap: 16, marginBottom: 12}}>
+              <img src="/images/school-logo.png" alt="Sri Somananda Dhamma School" className="hero-logo" />
+              <div style={{display: 'flex', flexDirection: 'column'}}>
+                <h1 className="hero-title">ශ්‍රි සෝමානන්ද දහම් පාසල</h1>
+                
+              </div>
+            </div>
             <p className="hero-subtitle">Manage students, teachers, attendance and reports — all in one beautiful, simple interface.</p>
 
             <div className="hero-cta">
               <button className="btn btn-primary" onClick={handleGetStarted}>Get Started</button>
-              <button className="btn btn-secondary" onClick={handleLearnMore}>Learn More</button>
+              <button className="btn btn-secondary" onClick={handleLearnMore}>About Us</button>
             </div>
 
             {/* Hero image editor removed per request */}
@@ -101,10 +107,7 @@ function Home() {
 
       <footer className="footer modern-footer">
         <div className="footer-grid">
-          <div>
-            <h4 className="footer-title">School Management System</h4>
-            <p className="footer-text">A simple, modern way to run your school.</p>
-          </div>
+          
 
           <div>
             <h4 className="footer-title">Quick Links</h4>
@@ -118,11 +121,11 @@ function Home() {
 
           <div>
             <h4 className="footer-title">Contact</h4>
-            <p className="footer-text">info@schoolms.com<br/>+1 (123) 456-7890</p>
+            <p className="footer-text">chamindubandara1234@gmail.com<br/>078-7911287</p>
           </div>
         </div>
 
-        <div className="footer-bottom">© {new Date().getFullYear()} School Management System</div>
+        <div className="footer-bottom">© {new Date().getFullYear()} sri somananda dhamma school official website</div>
       </footer>
     </div>
   );

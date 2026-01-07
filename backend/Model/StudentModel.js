@@ -29,6 +29,13 @@ const studentSchema = new Schema({
         required: true
     },
 
+    group: {
+        type: String,
+        enum: ['සීල', 'සමාධි', 'ප්‍රඥා', 'Unassigned'],
+        default: 'Unassigned'
+    },
+    photo: { type: String },
+
     phone: {
         type: String,
         

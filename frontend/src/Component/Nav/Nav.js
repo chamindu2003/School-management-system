@@ -15,6 +15,30 @@ function Nav() {
     }
   }, []);
 
+  const hideSidebarForStudentDashboard = user?.role === 'student' && location.pathname === '/students';
+  const schoolName = process.env.REACT_APP_SCHOOL_NAME || user?.schoolName || user?.school || 'School Management System';
+
+  // Re-check localStorage on route changes so the Nav stays in sync
+  // (useful if another part of the app updates the user object).
+  useEffect(() => {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      const parsed = JSON.parse(userStr);
+      setUser(parsed);
+      if (parsed.role === 'admin') {
+        setSidebarOpen(true);
+      }
+    }
+  }, [location]);
+
+  // If the logged-in user is an admin, ensure the sidebar is open by default
+  // so admin can navigate between pages without needing to toggle it.
+  useEffect(() => {
+    if (user && user.role === 'admin') {
+      setSidebarOpen(true);
+    }
+  }, [user]);
+
   useEffect(() => {
     if (user) {
       document.body.classList.remove('guest-mode');
@@ -26,7 +50,7 @@ function Nav() {
 
   // Keep body class in sync with sidebar state so main content can shift
   useEffect(() => {
-    if (user && sidebarOpen) {
+    if (user && sidebarOpen && !hideSidebarForStudentDashboard) {
       document.body.classList.add('sidebar-open');
     } else {
       document.body.classList.remove('sidebar-open');
@@ -44,8 +68,12 @@ function Nav() {
   if (!user) {
     return (
       <nav className="top-nav-guest">
-        <div className="guest-nav-container">
-          <Link to="/" className="guest-logo">School Management System</Link>
+        <div className="top-nav-inner">
+          <Link to="/" className="guest-logo">
+            <img src="/images/school-logo.png" alt={`${schoolName} logo`} className="guest-logo-img" />
+            <span className="guest-logo-text"></span>
+          </Link>
+
           <div className="guest-nav-links">
             {location.pathname === '/' && (
               <>
@@ -53,6 +81,18 @@ function Nav() {
                 <Link to="/signup" className="guest-btn signup-btn">Sign Up</Link>
               </>
             )}
+          </div>
+        </div>
+      </nav>
+    );
+  }
+  if (hideSidebarForStudentDashboard) {
+    return (
+      <nav className="top-nav-student">
+        <div className="student-nav-container">
+          <Link to="/" className="guest-logo">{schoolName}</Link>
+          <div style={{ marginLeft: 'auto' }}>
+            {/* Intentionally empty for students — header provides logout */}
           </div>
         </div>
       </nav>
@@ -66,7 +106,10 @@ function Nav() {
       </button>
       <nav className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
         <div className="sidebar-header">
-          <h3>SMS</h3>
+          <div className="sidebar-logo-wrap">
+            <img src="/images/school-logo.png" alt={schoolName} className="sidebar-logo" />
+            
+          </div>
         </div>
         <ul className="sidebar-menu">
           <li className="sidebar-item">
@@ -76,7 +119,7 @@ function Nav() {
           {/* Admin can see everything */}
           {user.role === 'admin' && (
             <div className="sidebar-section">
-              <div className="sidebar-section-title">Admin</div>
+              <div className="sidebar-section-title">Administrator</div>
               <li className="sidebar-item">
                 <Link to="/admin" className="sidebar-link">📊 Dashboard</Link>
               </li>
@@ -100,6 +143,9 @@ function Nav() {
               </li>
               <li className="sidebar-item">
                 <Link to="/admin/roles" className="sidebar-link">👤 Roles</Link>
+              </li>
+              <li className="sidebar-item">
+                <Link to="/admin/profile" className="sidebar-link">⚙️ Profile</Link>
               </li>
             </div>
           )}
@@ -151,8 +197,17 @@ function Nav() {
 
         <div className="sidebar-footer">
           <div className="user-info">
-            <div className="user-name">{user.name}</div>
-            <div className="user-role">{user.role}</div>
+            {user.photo && (
+              <img
+                src={user.photo.startsWith('http') ? user.photo : `${process.env.REACT_APP_API_BASE || 'http://localhost:5001'}${user.photo}`}
+                alt={user.name}
+                className="user-avatar"
+              />
+            )}
+            <div>
+              <div className="user-name">{user.name}</div>
+              <div className="user-role">{user.role}</div>
+            </div>
           </div>
           <button onClick={handleLogout} className="logout-btn">Logout</button>
         </div>

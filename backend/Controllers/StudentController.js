@@ -44,7 +44,8 @@ exports.getStudentByUserId = async (req, res) => {
     }
 };
 exports.createStudent = async (req, res) => {
-  const { userId, name, email, rollNumber, class: studentClass, phone, dateOfBirth, address } = req.body;
+  const { userId, name, email, rollNumber, class: studentClass, phone, dateOfBirth, address, group } = req.body;
+  const file = req.file;
   
   if (!userId) {
     return res.status(400).json({ message: 'userId is required' });
@@ -72,7 +73,9 @@ exports.createStudent = async (req, res) => {
       return res.status(409).json({ message: 'Roll number already exists' });
     }
 
-    const student = new Student({ userId, name, email, rollNumber, class: studentClass, phone, dateOfBirth, address });
+    const studentData = { userId, name, email, rollNumber, class: studentClass, phone, dateOfBirth, address, group: group || 'Unassigned' };
+    if (file) studentData.photo = `/uploads/${file.filename}`;
+    const student = new Student(studentData);
     await student.save();
     res.status(201).json({ student });
   } catch (error) {
@@ -81,8 +84,22 @@ exports.createStudent = async (req, res) => {
 };
 exports.updateStudent = async (req, res) => {
   try {
+    // If file uploaded via multer, set photo path
+    if (req.file) {
+      req.body.photo = `/uploads/${req.file.filename}`;
+    }
     const student = await Student.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!student) return res.status(404).json({ message: 'Student not found' });
+
+    // If student photo updated and a linked User exists, keep user.photo in sync
+    if (req.body.photo && student.userId) {
+      try {
+        await User.findByIdAndUpdate(student.userId, { photo: req.body.photo });
+      } catch (uErr) {
+        console.error('Failed to sync user photo:', uErr);
+      }
+    }
+
     res.status(200).json({ student });
   } catch (error) {
     res.status(500).json({ message: error.message });
