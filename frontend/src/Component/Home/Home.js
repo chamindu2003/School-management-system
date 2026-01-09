@@ -10,6 +10,7 @@ function Home() {
 
   const handleGetStarted = () => navigate('/signup');
   const handleLearnMore = () => navigate('/about');
+  const handleContactUs = () => navigate('/contact');
 
   return (
     <div className="home-container">
@@ -26,8 +27,9 @@ function Home() {
             <p className="hero-subtitle">Manage students, teachers, attendance and reports — all in one beautiful, simple interface.</p>
 
             <div className="hero-cta">
-              <button className="btn btn-primary" onClick={handleGetStarted}>Get Started</button>
+              <button className="btn btn-secondary" onClick={handleGetStarted}>Get Started</button>
               <button className="btn btn-secondary" onClick={handleLearnMore}>About Us</button>
+              <button className="btn btn-secondary" onClick={handleContactUs}>Contact Us</button>
             </div>
 
             {/* Hero image editor removed per request */}

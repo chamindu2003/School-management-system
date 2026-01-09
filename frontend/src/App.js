@@ -18,6 +18,9 @@ import Signup from './Component/signup/Signup';
 import AdminDashboard from './Component/Admin/AdminDashboard';
 import AdminProfile from './Component/Admin/AdminProfile';
 import ProtectedRoute from './Component/ProtectedRoute';
+import Contact from './Component/Contact/Contact';
+import About from './Component/About/About';
+
 
 function App() {
   const location = useLocation();
@@ -28,7 +31,10 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/signup" element={<Signup />} />
+        
         
         {/* Student routes */}
         <Route path="/students" element={
