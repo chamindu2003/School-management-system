@@ -363,19 +363,11 @@ function StudentsDashboard() {
             </div>
           )}
 
-          {/* Stats Grid */}
-          <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '2rem'}}>
+          {/* Stats Grid (only Attendance) */}
+          <div style={{display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem', marginBottom: '2rem'}}>
             <div style={{background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white', padding: '2rem', borderRadius: '10px', textAlign: 'center', boxShadow: '0 4px 6px rgba(0,0,0,0.1)'}}>
                 <h3 style={{margin: '0 0 1rem 0', opacity: 0.9, fontSize: '0.9rem'}}>Attendance</h3>
                 <p style={{margin: 0, fontSize: '2.5rem', fontWeight: 'bold'}}>{attendanceData?.summary?.attendancePercentage ?? stats.attendancePercent}%</p>
-              </div>
-            <div style={{background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', color: 'white', padding: '2rem', borderRadius: '10px', textAlign: 'center', boxShadow: '0 4px 6px rgba(0,0,0,0.1)'}}>
-              <h3 style={{margin: '0 0 1rem 0', opacity: 0.9, fontSize: '0.9rem'}}>Subjects</h3>
-              <p style={{margin: 0, fontSize: '2.5rem', fontWeight: 'bold'}}>{stats.subjectsEnrolled}</p>
-            </div>
-            <div style={{background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)', color: 'white', padding: '2rem', borderRadius: '10px', textAlign: 'center', boxShadow: '0 4px 6px rgba(0,0,0,0.1)'}}>
-              <h3 style={{margin: '0 0 1rem 0', opacity: 0.9, fontSize: '0.9rem'}}>Upcoming Exams</h3>
-              <p style={{margin: 0, fontSize: '2.5rem', fontWeight: 'bold'}}>{stats.upcomingExams}</p>
             </div>
           </div>
 
