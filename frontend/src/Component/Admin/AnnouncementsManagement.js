@@ -38,7 +38,18 @@ function AnnouncementsManagement() {
       setLoading(true);
       const userStr = localStorage.getItem('user');
       const user = userStr ? JSON.parse(userStr) : null;
-      const adminId = user ? user._id : undefined;
+      const adminId = user ? (user._id || user.id) : undefined;
+
+      if (!adminId) {
+        setMessage('You must be logged in as admin to publish');
+        setLoading(false);
+        setTimeout(() => setMessage(''), 2500);
+        return;
+      }
+
+      // ensure backend auth middleware receives user id via header (some routes use it)
+      axios.defaults.headers.common['user-id'] = adminId;
+
       const payload = { ...form, adminId };
       await axios.post(ANN_URL, payload);
       setMessage('Announcement published');

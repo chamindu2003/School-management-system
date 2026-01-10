@@ -133,6 +133,7 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  position: relative;
 }
 
 .sidebar-header h3 {
@@ -148,6 +149,34 @@
   align-items:center;
   justify-content:center;
   flex-direction:column;
+}
+
+/* notification bell in header */
+.nav-notif{
+  position:relative;
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 8px;
+}
+.nav-notif .bell{ font-size:18px; display:inline-block; }
+.nav-notif .notif-text{
+  margin-left:8px;
+  color: rgba(255,255,255,0.92);
+  font-size:13px;
+  font-weight:600;
+  vertical-align:middle;
+}
+.nav-notif .notif-badge{
+  margin-left:8px;
+  background: #ff3860;
+  color: white;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.18);
 }
 
 .sidebar-logo{

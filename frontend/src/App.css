@@ -38,6 +38,39 @@ body {
   padding: 0;
 }
 
+/* Global button styles: unified purple gradient used across the app */
+button,
+input[type="submit"],
+input[type="button"],
+button[type="submit"],
+a.button {
+  background: linear-gradient(90deg,#7c3aed,#a78bfa);
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(124,58,237,0.12);
+  font-weight: 600;
+  transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+}
+
+button:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover,
+button[type="submit"]:hover,
+a.button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px rgba(124,58,237,0.16);
+}
+
+button:disabled,
+input[disabled],
+button[disabled] {
+  opacity: 0.6;
+  cursor: default;
+}
+
 /* When on the homepage we want full-bleed (no left sidebar margin) */
 .App.home-full { margin-left: 0; }
 

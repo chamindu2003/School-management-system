@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import './Nav.css'
+import NotificationBell from './NotificationBell'
 
 function Nav() {
   const [user, setUser] = useState(null);
@@ -108,8 +109,12 @@ function Nav() {
         <div className="sidebar-header">
           <div className="sidebar-logo-wrap">
             <img src="/images/school-logo.png" alt={schoolName} className="sidebar-logo" />
-            
           </div>
+          {user.role === 'admin' && (
+            <div style={{ position: 'absolute', right: 12, top: 12 }}>
+              <NotificationBell />
+            </div>
+          )}
         </div>
         <ul className="sidebar-menu">
           <li className="sidebar-item">

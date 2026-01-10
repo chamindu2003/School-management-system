@@ -12,6 +12,7 @@ const studyMaterialRouter = require("./Routes/StudyMaterialRoute");
 const announcementRouter = require("./Routes/AnnouncementRoute");
 const classRouter = require("./Routes/ClassRoute");
 const scheduleRouter = require("./Routes/ScheduleRoute");
+const contactRouter = require("./Routes/ContactRoute");
 
 const app = express();
 const cors = require('cors');
@@ -30,6 +31,7 @@ app.use("/study-materials", studyMaterialRouter);
 app.use("/announcements", announcementRouter);
 app.use("/classes", classRouter);
 app.use("/schedules", scheduleRouter);
+app.use("/contact", contactRouter);
 
 
 mongoose.connect("mongodb+srv://admin:wsW4977n401ML1qC@schoolmanagementsystem.pokpet9.mongodb.net/")
