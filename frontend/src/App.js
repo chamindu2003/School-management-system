@@ -17,6 +17,7 @@ import User from './Component/User/user';
 import Signup from './Component/signup/Signup';
 import AdminDashboard from './Component/Admin/AdminDashboard';
 import AdminProfile from './Component/Admin/AdminProfile';
+import AdminMessages from './Component/Admin/AdminMessages';
 import ProtectedRoute from './Component/ProtectedRoute';
 import Contact from './Component/Contact/Contact';
 import About from './Component/About/About';
@@ -91,6 +92,11 @@ function App() {
         <Route path="/admin/profile" element={
           <ProtectedRoute allowedRoles={['admin']}>
             <AdminProfile />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/messages" element={
+          <ProtectedRoute allowedRoles={['admin']}>
+            <AdminMessages />
           </ProtectedRoute>
         } />
         <Route path="/admin/reports" element={

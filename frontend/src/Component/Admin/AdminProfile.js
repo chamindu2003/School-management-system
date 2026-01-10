@@ -77,7 +77,7 @@ function AdminProfile() {
       <form onSubmit={handleSubmit} className="profile-form">
         <div>
           <label>Name</label>
-          <input name="name" value={form.name} onChange={handleChange} required />
+          <input type="text" name="name" value={form.name} onChange={handleChange} required />
         </div>
         <div>
           <label>Email</label>
