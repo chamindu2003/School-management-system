@@ -10,7 +10,7 @@ const ScheduleSchema = new mongoose.Schema({
   // Either a specific date OR a dayOfWeek (0=Sunday .. 6=Saturday)
   date: { type: Date },
   dayOfWeek: { type: Number, min: 0, max: 6 },
-  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'UserModel' },
   createdAt: { type: Date, default: Date.now }
 });
 
