@@ -9,7 +9,7 @@
 .about-content section{ background:white; border-radius:10px; padding:1.5rem; box-shadow:0 6px 20px rgba(2,6,23,0.06); }
 .about-features{ display:grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap:0.75rem; list-style:disc; padding-left:1rem; }
 .btn{ border-radius:8px; padding:0.65rem 1rem; font-weight:700; text-decoration:none; display:inline-block; }
-.btn-primary{ background:white; color:#4F46E5; }
+.btn-primary{ background: linear-gradient(90deg, var(--sidebar-mid), var(--sidebar-end)); color: #fff; border: none; box-shadow: 0 10px 22px rgba(79,70,229,0.12); }
 .btn-ghost{ background:transparent; border:1px solid rgba(255,255,255,0.2); color:white; }
 
 @media (max-width: 768px){
