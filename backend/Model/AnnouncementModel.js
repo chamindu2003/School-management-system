@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const AnnouncementSchema = new mongoose.Schema({
   admin: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'UserModel',
     required: true
   },
   title: {

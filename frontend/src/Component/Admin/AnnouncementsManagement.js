@@ -105,7 +105,7 @@ function AnnouncementsManagement() {
                 <option>All</option>
                 <option>Teachers</option>
                 <option>Students</option>
-                <option>Parents</option>
+                
               </select>
             </label>
             <label>
