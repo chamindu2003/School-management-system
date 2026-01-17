@@ -34,6 +34,10 @@ function AdminDashboard() {
                 <h2>📢 Announcements</h2>
                 <p>Publish school-wide and class notices</p>
               </Link>
+              <Link to="/admin/tasks" className="admin-card">
+                <h2>🗂️ Task Management</h2>
+                <p>Create and assign tasks to groups</p>
+              </Link>
               <Link to="/admin/reports" className="admin-card">
                 <h2>📊 Reports</h2>
                 <p>View attendance and performance analytics</p>

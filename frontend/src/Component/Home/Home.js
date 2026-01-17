@@ -1,12 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './Home.css';
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:5001';
 
 function Home() {
   const [heroImage, setHeroImage] = useState('/images/home.jpg');
   const [inputImage, setInputImage] = useState('');
   const heroBackground = `linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.04)), url('${heroImage}')`;
   const navigate = useNavigate();
+  const [tasks, setTasks] = useState([]);
+  const [latestTask, setLatestTask] = useState(null);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await axios.get(`${API_BASE}/tasks`);
+        const list = (res.data && res.data.tasks) || [];
+        setTasks(list);
+        if (list.length) setLatestTask(list[0]);
+      } catch (e) {
+        console.error('load tasks', e?.message || e);
+      }
+    };
+    load();
+  }, []);
 
   const handleGetStarted = () => navigate('/signup');
   const handleLearnMore = () => navigate('/about');
@@ -57,6 +75,19 @@ function Home() {
                 <div className="stat-row"><span>Classes</span><strong>3</strong></div>
                 <div className="stat-row"><span>Students</span><strong>120</strong></div>
                 <div className="stat-row"><span>Attendance</span><strong>87%</strong></div>
+                {latestTask && (
+                  <div className="task-marks">
+                    <h4 style={{marginTop:12,marginBottom:8}}>Latest Task: {latestTask.title}</h4>
+                    <div style={{display:'flex',gap:12}}>
+                      {(latestTask.marksByGroup || []).map(m => (
+                        <div key={m.group} style={{textAlign:'center'}}>
+                          <div style={{fontSize:12, color:'#6b7280'}}>{m.group}</div>
+                          <div style={{fontWeight:700}}>{m.marks === null ? '-' : m.marks}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

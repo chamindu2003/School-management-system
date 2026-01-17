@@ -9,6 +9,7 @@ import Teachers from './Component/Teachers/TeachersDashboard';
 import Courses from './Component/Courses/CoursesDashboard';
 import ClassesManagement from './Component/Admin/ClassesManagement';
 import AnnouncementsManagement from './Component/Admin/AnnouncementsManagement';
+import TasksManagement from './Component/Admin/TasksManagement';
 import ReportsDashboard from './Component/Admin/ReportsDashboard';
 import RoleAssignment from './Component/Admin/RoleAssignment';
 import Attendance from './Component/Attendance/AttendanceDashboard';
@@ -87,6 +88,11 @@ function App() {
         <Route path="/admin/announcements" element={
           <ProtectedRoute allowedRoles={['admin']}>
             <AnnouncementsManagement />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/tasks" element={
+          <ProtectedRoute allowedRoles={['admin']}>
+            <TasksManagement />
           </ProtectedRoute>
         } />
         <Route path="/admin/profile" element={
