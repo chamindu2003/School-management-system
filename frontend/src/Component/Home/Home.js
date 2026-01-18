@@ -5,12 +5,12 @@ import './Home.css';
 const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:5001';
 
 function Home() {
-  const [heroImage, setHeroImage] = useState('/images/home.jpg');
-  const [inputImage, setInputImage] = useState('');
+  const [heroImage] = useState('/images/home.jpg');
   const heroBackground = `linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.04)), url('${heroImage}')`;
   const navigate = useNavigate();
   const [tasks, setTasks] = useState([]);
   const [latestTask, setLatestTask] = useState(null);
+  const GROUPS = ['සීල', 'සමාධි', 'ප්‍රඥා'];
 
   useEffect(() => {
     const load = async () => {
@@ -18,6 +18,7 @@ function Home() {
         const res = await axios.get(`${API_BASE}/tasks`);
         const list = (res.data && res.data.tasks) || [];
         setTasks(list);
+        console.debug('Home: loaded tasks', list);
         if (list.length) setLatestTask(list[0]);
       } catch (e) {
         console.error('load tasks', e?.message || e);
@@ -25,6 +26,15 @@ function Home() {
     };
     load();
   }, []);
+
+  // pre-compute group totals so rendering is simpler
+  const groupTotals = GROUPS.map(g => {
+    const total = (tasks || []).reduce((sum, t) => {
+      const m = (t.marksByGroup || []).find(x => x.group === g);
+      return sum + ((m && m.marks != null) ? Number(m.marks) : 0);
+    }, 0);
+    return { group: g, total };
+  });
 
   const handleGetStarted = () => navigate('/signup');
   const handleLearnMore = () => navigate('/about');
@@ -39,7 +49,6 @@ function Home() {
               <img src="/images/school-logo.png" alt="Sri Somananda Dhamma School" className="hero-logo" />
               <div style={{display: 'flex', flexDirection: 'column'}}>
                 <h1 className="hero-title">ශ්‍රි සෝමානන්ද දහම් පාසල</h1>
-                
               </div>
             </div>
             <p className="hero-subtitle">Manage students, teachers, attendance and reports — all in one beautiful, simple interface.</p>
@@ -49,8 +58,6 @@ function Home() {
               <button className="btn btn-secondary" onClick={handleLearnMore}>About Us</button>
               <button className="btn btn-secondary" onClick={handleContactUs}>Contact Us</button>
             </div>
-
-            {/* Hero image editor removed per request */}
 
             <ul className="hero-stats">
               <li>
@@ -75,6 +82,20 @@ function Home() {
                 <div className="stat-row"><span>Classes</span><strong>3</strong></div>
                 <div className="stat-row"><span>Students</span><strong>120</strong></div>
                 <div className="stat-row"><span>Attendance</span><strong>87%</strong></div>
+
+                {/* Group totals */}
+                <div style={{marginTop:8, marginBottom:6}}>
+                  <div style={{fontSize:13, color:'#374151', marginBottom:6, fontWeight:600}}>Group Totals</div>
+                  <div style={{display:'flex', gap:12}}>
+                    {groupTotals.map(g => (
+                      <div key={g.group} style={{textAlign:'center', background:'#fff', padding:'8px 12px', borderRadius:8, boxShadow:'0 2px 6px rgba(0,0,0,0.06)'}}>
+                        <div style={{fontSize:12, color:'#6b7280'}}>{g.group}</div>
+                        <div style={{fontWeight:700, color:'#111827'}}>{g.total}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
                 {latestTask && (
                   <div className="task-marks">
                     <h4 style={{marginTop:12,marginBottom:8}}>Latest Task: {latestTask.title}</h4>
@@ -140,7 +161,6 @@ function Home() {
 
       <footer className="footer modern-footer">
         <div className="footer-grid">
-          
 
           <div>
             <h4 className="footer-title">Quick Links</h4>
@@ -153,10 +173,12 @@ function Home() {
           </div>
 
           <div>
-            <h4 className="footer-title">Contact</h4>
-            <p className="footer-text">chamindubandara1234@gmail.com<br/>078-7911287</p>
+            <h5 className="footer-title">Created By :</h5><p className="footer-text">Chamindu Bandara<br/>078-7911287</p>
+           
           </div>
         </div>
+
+        
 
         <div className="footer-bottom">© {new Date().getFullYear()} sri somananda dhamma school official website</div>
       </footer>
