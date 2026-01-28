@@ -25,6 +25,8 @@ router.get('/exam', getMarks);
 
 // Get student marks
 router.get('/student', getStudentMarks);
+// Authenticated student: get own marks
+router.get('/mine', getMyMarks);
 
 // Get class performance
 router.get('/performance', getClassPerformance);

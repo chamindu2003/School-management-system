@@ -84,7 +84,7 @@ function StudentsDashboard() {
       // Fetch real attendance, marks, announcements and schedule
       const [attRes, marksRes, annRes, schedRes] = await Promise.all([
         axios.get(`${API_BASE}/attendance/student`, { params: { studentId: studentData?._id || userData._id, class: studentData?.class } }).catch(() => null),
-        axios.get(`${API_BASE}/marks/student`, { params: { studentId: studentData?._id || userData._id } }).catch(() => null),
+        axios.get(`${API_BASE}/marks/mine`).catch(() => null),
         axios.get(`${API_BASE}/announcements/class`, { params: { className: studentData?.class } }).catch(() => null),
         axios.get(`${API_BASE}/schedules/class`, { params: { className: studentData?.class, date: new Date().toISOString().slice(0,10) } }).catch(() => null)
       ]);

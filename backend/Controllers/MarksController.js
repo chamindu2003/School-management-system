@@ -203,6 +203,44 @@ exports.getStudentMarks = async (req, res) => {
   }
 };
 
+// Get marks for the authenticated student
+exports.getMyMarks = async (req, res) => {
+  try {
+    const studentId = req.user && req.user.id;
+    if (!studentId) return res.status(401).json({ message: 'Authentication required' });
+
+    const marks = await Marks.find({ student: studentId }).sort({ examName: 1 }).populate('teacher', 'name');
+
+    const totalMarksData = marks.reduce((acc, mark) => {
+      if (!acc[mark.subject]) {
+        acc[mark.subject] = { exams: [], totalPercentage: 0, count: 0 };
+      }
+      acc[mark.subject].exams.push({
+        examName: mark.examName,
+        percentage: mark.percentage,
+        grade: mark.grade,
+        marksObtained: mark.marksObtained,
+        totalMarks: mark.totalMarks
+      });
+      acc[mark.subject].totalPercentage += (mark.percentage || 0);
+      acc[mark.subject].count++;
+      return acc;
+    }, {});
+
+    const subjectPerformance = {};
+    for (const subject in totalMarksData) {
+      subjectPerformance[subject] = {
+        averagePercentage: (totalMarksData[subject].totalPercentage / totalMarksData[subject].count).toFixed(2),
+        exams: totalMarksData[subject].exams
+      };
+    }
+
+    res.status(200).json({ marks, performance: subjectPerformance });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // Get class performance
 exports.getClassPerformance = async (req, res) => {
   try {
