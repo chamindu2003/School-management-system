@@ -8,6 +8,26 @@ exports.enterMarks = async (req, res) => {
     const { studentId, subject, examName, marksObtained, totalMarks, remarks } = req.body;
     const teacherId = req.user.id;
 
+    console.log('enterMarks called', { teacherId, studentId, subject, examName, marksObtained });
+
+    // Verify student exists and belongs to a class assigned to this teacher
+    const student = await Student.findById(studentId);
+    if (!student) {
+      return res.status(404).json({ message: 'Student not found' });
+    }
+
+    let teacher = await Teacher.findById(teacherId);
+    // If teacher profile isn't present, skip class-assignment validation
+    if (!teacher) {
+      teacher = { classes: [] };
+    }
+
+    console.log('teacher classes for validation', teacher.classes);
+
+    if (teacher.classes && teacher.classes.length > 0 && !teacher.classes.includes(student.class)) {
+      return res.status(403).json({ message: 'You are not assigned to this student\'s class' });
+    }
+
     // Check if marks already exist for this student, exam, and subject
     const existingMarks = await Marks.findOne({
       student: studentId,
@@ -59,9 +79,27 @@ exports.enterBulkMarks = async (req, res) => {
     const { marksRecords, subject, examName, totalMarks } = req.body;
     const teacherId = req.user.id;
 
+    console.log('enterBulkMarks called', { teacherId, subject, examName, recordsCount: Array.isArray(marksRecords) ? marksRecords.length : 0 });
     const savedRecords = [];
+    const skippedRecords = [];
+
+    // Load teacher once; if missing, skip class validation (legacy users)
+    const teacher = (await Teacher.findById(teacherId)) || { classes: [] };
 
     for (const record of marksRecords) {
+      console.log('processing record', { studentId: record.studentId, marksObtained: record.marksObtained });
+      const student = await Student.findById(record.studentId);
+      if (!student) {
+        skippedRecords.push({ studentId: record.studentId, reason: 'Student not found' });
+        continue;
+      }
+
+      // Skip if teacher not assigned to this student's class
+      if (teacher.classes && teacher.classes.length > 0 && !teacher.classes.includes(student.class)) {
+        skippedRecords.push({ studentId: record.studentId, reason: 'Teacher not assigned to student class' });
+        continue;
+      }
+
       const existingMarks = await Marks.findOne({
         student: record.studentId,
         subject,
@@ -70,6 +108,7 @@ exports.enterBulkMarks = async (req, res) => {
       });
 
       if (existingMarks && existingMarks.publishedStatus) {
+        skippedRecords.push({ studentId: record.studentId, reason: 'Published - cannot modify' });
         continue; // Skip published marks
       }
 
@@ -94,8 +133,9 @@ exports.enterBulkMarks = async (req, res) => {
     }
 
     res.status(201).json({ 
-      message: 'Bulk marks entered successfully',
-      records: savedRecords 
+      message: 'Bulk marks processed',
+      records: savedRecords,
+      skipped: skippedRecords
     });
   } catch (error) {
     res.status(500).json({ message: error.message });

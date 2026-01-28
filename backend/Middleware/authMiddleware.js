@@ -7,14 +7,21 @@ const authenticateToken = (req, res, next) => {
     // Get the user ID from request
     // This can be from session, JWT token, or headers
     const userId = req.headers['user-id'] || req.body.userId || req.query.userId;
-    
+
     if (!userId) {
       return res.status(401).json({ message: 'Authentication required' });
     }
 
     // Set user ID in request for later use
     req.user = { id: userId };
-    next();
+
+    // Only call next if provided as a function (defensive)
+    if (typeof next === 'function') {
+      return next();
+    }
+
+    // If no next provided, finish the response here
+    return res.status(200).json({ message: 'Authenticated' });
   } catch (error) {
     res.status(401).json({ message: 'Invalid authentication' });
   }

@@ -48,8 +48,10 @@ const MarksSchema = new mongoose.Schema({
 
 // Calculate percentage and grade before saving
 MarksSchema.pre('save', function(next) {
-  this.percentage = (this.marksObtained / this.totalMarks) * 100;
-  
+  // Protect against missing/invalid totalMarks
+  const total = (typeof this.totalMarks === 'number' && this.totalMarks > 0) ? this.totalMarks : 100;
+  this.percentage = (this.marksObtained / total) * 100;
+
   // Calculate grade
   if (this.percentage >= 90) this.grade = 'A+';
   else if (this.percentage >= 80) this.grade = 'A';
@@ -57,8 +59,8 @@ MarksSchema.pre('save', function(next) {
   else if (this.percentage >= 60) this.grade = 'B';
   else if (this.percentage >= 50) this.grade = 'C';
   else this.grade = 'F';
-  
-  next();
+
+  if (typeof next === 'function') return next();
 });
 
 // Index for quick queries
