@@ -315,7 +315,7 @@ function TeacherDashboard() {
           {activeTab === 'classes' && <TeacherClassesComponent user={user} />}
           
           {activeTab === 'attendance' && <AttendanceMarkingComponent user={user} teacher={teacher} />}
-          {activeTab === 'marks' && <MarksManagementComponent user={user} />}
+          {activeTab === 'marks' && <MarksManagementComponent user={teacher || user} />}
           {activeTab === 'performance' && <StudentPerformanceComponent user={user} teacherClasses={teacher.classes || []} />}
           {activeTab === 'materials' && <StudyMaterialComponent user={user} teacher={teacher} />}
           {activeTab === 'announcements' && <AnnouncementsComponent user={user} />}

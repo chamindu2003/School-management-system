@@ -246,6 +246,12 @@
   border-color: #93C5FD;
 }
 
+.grade-B\+ {
+  background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%);
+  color: #0C4A6E;
+  border-color: #93C5FD;
+}
+
 .grade-C {
   background: linear-gradient(135deg, #FEF08A 0%, #FEE450 100%);
   color: #78350F;

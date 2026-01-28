@@ -25,6 +25,13 @@ function MarksManagementComponent({ user }) {
     }
   }, [selectedClass]);
 
+  // Ensure axios has the current user id for auth middleware
+  useEffect(() => {
+    if (user && (user._id || user.id)) {
+      axios.defaults.headers.common['user-id'] = user._id || user.id;
+    }
+  }, [user]);
+
   const fetchStudents = async () => {
     try {
       setLoading(true);
@@ -61,25 +68,28 @@ function MarksManagementComponent({ user }) {
 
     try {
       setLoading(true);
-      const marksRecords = Object.entries(marks).map(([studentId, data]) => ({
-        studentId,
-        marksObtained: parseFloat(data.marksObtained),
-        remarks: data.remarks
-      }));
+      const marksRecords = Object.entries(marks)
+        .map(([studentId, data]) => ({
+          studentId,
+          marksObtained: data.marksObtained === '' || data.marksObtained == null ? null : parseFloat(data.marksObtained),
+          remarks: data.remarks
+        }))
+        .filter(r => r.marksObtained != null && !isNaN(r.marksObtained));
 
       await axios.post(`${MARKS_URL}/enter-bulk`, {
         marksRecords,
         subject: selectedSubject,
         examName: selectedExam,
-        totalMarks: parseInt(totalMarks)
-      });
+        totalMarks: parseInt(totalMarks) || 100
+      }, { headers: { 'user-id': user?._id || user?.id } });
 
       setMessage('Marks entered successfully!');
       setTimeout(() => setMessage(''), 3000);
       setMarks({});
     } catch (error) {
-      console.error('Error entering marks:', error);
-      setMessage('Error entering marks');
+      console.error('Error entering marks:', error, error.response?.data);
+      const serverMsg = error.response?.data?.message || error.message || 'Error entering marks';
+      setMessage(serverMsg);
     } finally {
       setLoading(false);
     }
